@@ -1,12 +1,10 @@
-# Project: NAME
+# Project: Evelyn Hung
 
 ## Contributors
-NAME, NAME, NAME
+Evelyn Hung
 
 ## Dependencies
-- LANGUAGE AND VERSION
-- EXTERNAL LIBRARIES
-- ETC
+- Java 11
 
 ## Build Instructions
 HOW TO BUILD YOUR PROJECT.
