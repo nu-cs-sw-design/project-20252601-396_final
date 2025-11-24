@@ -1,2 +1,185 @@
 @startuml
+scale max 512 height
+package model {
+    +interface GameObserver {
+        +onGameMessage(message: String): void
+        +onTurnChanged(playerIdx: int): void
+        +onCardPlayed(playerIdx: int, card: Card): void
+        +onRequestNope(actionPlayerIdx: int, cardType: CardType): void
+        +onExplosionRisk(playerIdx: int): void
+        +onRequestExplosionInsertIndex(): void
+        +onDefuseUsed(playerIdx: int): void
+        +onPlayerEliminated(playerIdx: int): void
+        +onActionCancelled(message: String): void
+        +onException(e: GameException): void
+    }
+
+    interface GameContext {
+        +getDeck(): Deck
+        +getCurrentPlayer(): Player
+        +getPhase(): GamePhase
+        +notifyObservers(msg: String): void
+    }
+
+    interface CardAction {
+        +execute(context: GameContext): void
+    }
+
+    package exceptions {
+        class GameException {
+            +GameException(msg: String)
+        }
+        exception EmptyDeckException {
+        }
+        exception NotEnoughCardsException {
+        }
+        exception InvalidMoveException {
+        }
+
+        EmptyDeckException -u-|> GameException
+        NotEnoughCardsException -u-|> GameException
+        InvalidMoveException -u-|> GameException
+    }
+
+    enum GamePhase {
+        NORMAL
+        NOPE_PHASE
+        EXPLOSION_PHASE
+        GAME_OVER
+    }
+
+    class Game implements GameContext {
+        -players: List<Player>
+        -deck: Deck
+        -observers: List<GameObserver>
+        -currentTurn: int
+        -phase: GamePhase
+        -pendingAction: PendingAction
+
+        +start(): void
+        +drawCard(playerIdx: int): void
+        +playCard(playerIdx: int, cardIdx: int): void
+        +handleNopeInput(playerIdx: int, wantsToNope: boolean): void
+        +handleExplosionInsert(index: int): void
+    }
+
+    class PendingAction {
+        -actionStrategy: CardAction
+        -initiatingPlayer: int
+        -nopeCount: int
+        +addNope(): void
+        +resolve(): void
+    }
+
+    class Player {
+        -id: int
+        -hand: List<Card>
+        -isDead: boolean
+        +hasDefuse(): boolean
+        +removeDefuse(): void
+        +removeCard(index: int): Card
+        +addCard(c: Card): void
+    }
+
+    class Deck {
+        -cards: Stack<Card>
+        +shuffle(): void
+        +draw(): Card
+        +insertAt(card: Card, index: int): void
+        +swapTopAndBottom(): void
+        +size(): int
+    }
+
+    class Card {
+        -type: CardType
+        -action: CardAction
+        +performAction(ctx: GameContext): void
+        +getType(): CardType
+    }
+
+    enum CardType {
+        DEFUSE
+        EXPLODING_KITTEN
+        NOPE
+        SHUFFLE
+        SWAP_TOP_AND_BOTTOM
+    }
+
+    class CardFactory {
+        +{static} createCard(type: CardType): Card
+    }
+
+    class ActionShuffle implements CardAction {
+        +execute(ctx: GameContext): void
+    }
+    class ActionSwapTopBottom implements CardAction {
+        +execute(ctx: GameContext): void
+    }
+    class ActionNope implements CardAction {
+        +execute(ctx: GameContext): void
+    }
+}
+
+package view {
+    class GameUI implements model.GameObserver {
+        -controller: controller.GameController
+
+        +displayState(game: Game): void
+        +promptLanguage(): void
+        +promptPlayerCount(): void
+
+        +onGameMessage(msg: String): void
+        +onTurnChanged(pid: int): void
+        +onCardPlayed(pid: int, c: Card): void
+        +onRequestNope(pid: int, type: CardType): void
+        +onExplosionRisk(pid: int): void
+        +onRequestExplosionInsertIndex(): void
+        +onDefuseUsed(pid: int): void
+        +onPlayerEliminated(pid: int): void
+        +onActionCancelled(msg: String): void
+        +onException(e: GameException): void
+    }
+}
+
+package controller {
+    class GameController {
+        -game: model.Game
+        -ui: view.GameUI
+
+        +initializeSequence(): void
+        +handleCardPlay(cardIndex: int): void
+        +handleDraw(): void
+        +handleNopeResponse(response: boolean): void
+        +handleKittenInsertion(index: int): void
+    }
+
+    class Main {
+        +{static} main(args: String[]): void
+    }
+}
+
+GameController --> model.Game
+GameController --> view.GameUI
+Main ..> GameController
+
+view.GameUI ..|> model.GameObserver
+view.GameUI --> model.Game
+
+model.Game --> "1" model.Deck
+model.Game --> "*" model.Player
+model.Game --> model.PendingAction
+model.Game --> model.GamePhase
+model.Card --> "1" model.CardAction
+model.Card --> model.CardType
+model.CardFactory ..> model.Card
+
+model.Deck ..> model.exceptions.EmptyDeckException : <<throws>>
+model.ActionSwapTopBottom ..> model.exceptions.NotEnoughCardsException : <<throws>>
+model.Game ..> model.exceptions.InvalidMoveException : <<throws>>
+view.GameUI ..> model.exceptions.GameException
+
+model.ActionShuffle ..|> model.CardAction
+model.ActionSwapTopBottom ..|> model.CardAction
+model.ActionNope ..|> model.CardAction
+
 @enduml
