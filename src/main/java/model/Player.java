@@ -1,5 +1,7 @@
 package model;
 
+import model.exceptions.NotEnoughCardsException;
+
 import java.util.List;
 
 public class Player {
@@ -11,13 +13,26 @@ public class Player {
         this.id = id;
     }
 
-    public boolean hasDefuse(){
+    public boolean hasCard(CardType cardType) {
+        for (Card card : hand) {
+            if (card.getType() == cardType) {
+                return true;
+            }
+        }
         return false;
     }
-    public void removeDefuse(){}
-    // did not handle when hand has no card etc.
-    public Card removeCard(int index){
-        return hand.remove(index);
+    public CardType removeCard(int index){
+        if (index < 0 || index >= getHandSize()) {
+            throw new NotEnoughCardsException(getHandSize());
+        }
+        CardType cardType = hand.get(index).getType();
+        hand.remove(index);
+        return cardType;
     }
-    public void addCard(Card card){}
+    public void addCard(Card card){
+        hand.add(card);
+    }
+    public int getHandSize() {
+        return hand.size();
+    }
 }
