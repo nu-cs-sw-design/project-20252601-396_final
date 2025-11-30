@@ -120,6 +120,9 @@ package model {
     class ActionNope implements CardAction {
         +execute(ctx: GameContext): void
     }
+    class ActionPassive implements CardAction {
+        +execute(ctx: GameContext): void
+    }
 }
 
 package view {
@@ -183,5 +186,6 @@ view.GameUI ..> model.exceptions.GameException
 model.ActionShuffle ..|> model.CardAction
 model.ActionSwapTopBottom ..|> model.CardAction
 model.ActionNope ..|> model.CardAction
+model.ActionPassive ..|> model.CardAction
 
 @enduml

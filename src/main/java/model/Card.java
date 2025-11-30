@@ -11,11 +11,7 @@ public class Card {
         this.action = action;
     }
     public void performAction(GameContext ctx) {
-        if (action != null) {
-            action.execute(ctx);
-        } else {
-            throw new InvalidMoveException("Card: " + type.toString() + ", cannot perform action.");
-        }
+        action.execute(ctx);
     }
     public CardType getType() {
         return type;
