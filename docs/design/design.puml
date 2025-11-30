@@ -75,19 +75,19 @@ package model {
         -id: int
         -hand: List<Card>
         -isDead: boolean
-        +hasDefuse(): boolean
-        +removeDefuse(): void
+        +hasCard(cardType: CardType): boolean
         +removeCard(index: int): Card
         +addCard(card: Card): void
+        +getHandSize(): int
     }
 
     class Deck {
-        -cards: Stack<Card>
+        -cards: List<Card>
         +shuffle(): void
         +draw(): Card
         +insertAt(card: Card, index: int): void
         +swapTopAndBottom(): void
-        +size(): int
+        +getDeckSize(): int
     }
 
     class Card {
@@ -176,8 +176,19 @@ model.Game --> model.PendingAction
 model.Game --> model.GamePhase
 model.Card --> "1" model.CardAction
 model.Card --> model.CardType
-model.CardFactory ..> model.Card
 
+model.CardFactory ..> model.Card
+model.CardFactory ..> model.CardAction
+model.CardFactory ..> model.CardType
+model.CardFactory ..> model.ActionShuffle
+model.CardFactory ..> model.ActionNope
+model.CardFactory ..> model.ActionSwapTopBottom
+model.CardFactory ..> model.ActionPassive
+
+model.Player --> "*" model.Card
+model.Player ..> model.CardType
+
+model.Deck --> "*" model.Card
 model.Deck ..> model.exceptions.EmptyDeckException : <<throws>>
 model.ActionSwapTopBottom ..> model.exceptions.NotEnoughCardsException : <<throws>>
 model.Game ..> model.exceptions.InvalidMoveException : <<throws>>
