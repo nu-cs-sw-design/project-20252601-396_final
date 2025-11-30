@@ -78,7 +78,7 @@ package model {
         +hasDefuse(): boolean
         +removeDefuse(): void
         +removeCard(index: int): Card
-        +addCard(c: Card): void
+        +addCard(card: Card): void
     }
 
     class Deck {
