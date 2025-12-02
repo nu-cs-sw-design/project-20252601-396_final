@@ -18,6 +18,7 @@ package model {
         +getDeck(): Deck
         +getCurrentPlayer(): Player
         +getPhase(): GamePhase
+        +getPendingAction(): PendingAction
         +notifyObservers(msg: String): void
     }
 
@@ -63,14 +64,6 @@ package model {
         +handleExplosionInsert(index: int): void
     }
 
-    class PendingAction {
-        -actionStrategy: CardAction
-        -initiatingPlayer: int
-        -nopeCount: int
-        +addNope(): void
-        +resolve(): void
-    }
-
     class Player {
         -id: int
         -hand: List<Card>
@@ -111,17 +104,27 @@ package model {
         +{static} createCard(type: CardType): Card
     }
 
-    class ActionShuffle implements CardAction {
+    class ActionShuffle{
         +execute(ctx: GameContext): void
     }
-    class ActionSwapTopBottom implements CardAction {
+    class ActionSwapTopBottom{
         +execute(ctx: GameContext): void
     }
-    class ActionNope implements CardAction {
+    class ActionNope{
         +execute(ctx: GameContext): void
     }
-    class ActionPassive implements CardAction {
+    class ActionPassive{
+        -{final} message: String
         +execute(ctx: GameContext): void
+    }
+    class PendingAction{
+        -{final} action: CardAction
+        -{final} initiatingPlayerIndex: int
+        -{final} nopeCount: int
+
+        +addNope(): void
+        +getNopeCount(): int
+        +resolve(context: GameContext ): void
     }
 }
 
@@ -194,9 +197,14 @@ model.ActionSwapTopBottom ..> model.exceptions.NotEnoughCardsException : <<throw
 model.Game ..> model.exceptions.InvalidMoveException : <<throws>>
 view.GameUI ..> model.exceptions.GameException
 
-model.ActionShuffle ..|> model.CardAction
-model.ActionSwapTopBottom ..|> model.CardAction
-model.ActionNope ..|> model.CardAction
-model.ActionPassive ..|> model.CardAction
+model.ActionShuffle .u.|> model.CardAction
+model.ActionSwapTopBottom .u.|> model.CardAction
+model.ActionNope .u.|> model.CardAction
+model.ActionPassive .u.|> model.CardAction
 
+model.ActionNope ..> model.PendingAction
+model.GameContext ..> model.Deck
+model.GameContext ..> model.Player
+model.GameContext ..> model.GamePhase
+model.GameContext ..> model.PendingAction
 @enduml

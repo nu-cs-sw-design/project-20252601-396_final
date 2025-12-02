@@ -10,7 +10,9 @@ public class Deck {
             "Cannot draw card from empty deck.";
 
     public Deck(){}
-    public void shuffle(){}
+    public void shuffle(){
+
+    }
     public Card draw(){
         if (cards.isEmpty()) {
             throw new InvalidMoveException(DRAW_FROM_EMPTY_DECK_EXCEPTION);
