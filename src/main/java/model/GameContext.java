@@ -7,5 +7,6 @@ public interface GameContext {
     public GamePhase getPhase();
     public PendingAction getPendingAction();
 
+    public void registerObservers(GameObserver observer);
     public void notifyObservers(String msg);
 }

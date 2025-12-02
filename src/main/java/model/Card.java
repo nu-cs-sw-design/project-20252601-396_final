@@ -16,7 +16,9 @@ public class Card {
     public CardType getType() {
         return type;
     }
-
+    public CardAction getAction() {
+        return action;
+    }
     // for debugging and display
     @Override
     public String toString() {

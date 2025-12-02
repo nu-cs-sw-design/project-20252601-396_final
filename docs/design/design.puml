@@ -19,7 +19,8 @@ package model {
         +getCurrentPlayer(): Player
         +getPhase(): GamePhase
         +getPendingAction(): PendingAction
-        +notifyObservers(msg: String): void
+        +registerObservers(observer: GameObserver): void
+        +notifyObservers(msg: String) void
     }
 
     interface CardAction {
@@ -49,7 +50,7 @@ package model {
         GAME_OVER
     }
 
-    class Game implements GameContext {
+    class Game{
         -players: List<Player>
         -deck: Deck
         -observers: List<GameObserver>
@@ -57,11 +58,22 @@ package model {
         -phase: GamePhase
         -pendingAction: PendingAction
 
+        +getDeck(): Deck
+        +getCurrentPlayer(): Player
+        +getPhase(): GamePhase
+        +getPendingAction(): PendingAction
+        +notifyObservers(msg: String): void
+
         +start(): void
         +drawCard(playerIdx: int): void
         +playCard(playerIdx: int, cardIdx: int): void
         +handleNopeInput(playerIdx: int, wantsToNope: boolean): void
         +handleExplosionInsert(index: int): void
+
+        -nextTurn(): void
+        -checkGameOver(): void
+        -handleExplosionLogic(player: Player): void
+        -resolvePendingAction(): void
     }
 
     class Player {
@@ -69,9 +81,14 @@ package model {
         -hand: List<Card>
         -isDead: boolean
         +hasCard(cardType: CardType): boolean
+        +removeDefuse(): void
         +removeCard(index: int): Card
         +addCard(card: Card): void
         +getHandSize(): int
+        +getId(): int
+        +getDead(): boolean
+        +setDead(dead: boolean): void
+        +getCard(index: int):Card
     }
 
     class Deck {
@@ -90,6 +107,7 @@ package model {
         +Card(type: CardType, action: CardAction)
         +performAction(ctx: GameContext): void
         +getType(): CardType
+        +getAction(): CardAction
     }
 
     enum CardType {
@@ -177,6 +195,7 @@ model.Game --> "1" model.Deck
 model.Game --> "*" model.Player
 model.Game --> model.PendingAction
 model.Game --> model.GamePhase
+model.Game ..|> model.GameContext
 model.Card --> "1" model.CardAction
 model.Card --> model.CardType
 
@@ -206,5 +225,6 @@ model.ActionNope ..> model.PendingAction
 model.GameContext ..> model.Deck
 model.GameContext ..> model.Player
 model.GameContext ..> model.GamePhase
+model.GameContext ..> model.GameObserver
 model.GameContext ..> model.PendingAction
 @enduml

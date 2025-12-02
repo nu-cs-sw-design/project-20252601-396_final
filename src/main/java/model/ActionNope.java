@@ -3,7 +3,6 @@ package model;
 import model.exceptions.InvalidMoveException;
 
 public class ActionNope implements CardAction {
-
     @Override
     public void execute(GameContext context) {
         // 1. Can only play Nope if there is a Pending Action in the NOPE_PHASE.

@@ -21,18 +21,41 @@ public class Player {
         }
         return false;
     }
-    public CardType removeCard(int index){
+    public void removeDefuse(){
+        for (Card card : hand) {
+            if (card.getType() == CardType.DEFUSE) {
+                hand.remove(card);
+            }
+        }
+    }
+    public Card removeCard(int index){
         if (index < 0 || index >= getHandSize()) {
             throw new NotEnoughCardsException(getHandSize());
         }
-        CardType cardType = hand.get(index).getType();
+        Card card = hand.get(index);
         hand.remove(index);
-        return cardType;
+        return card;
+    }
+    public Card getCard(int index){
+        if (index < 0 || index >= getHandSize()) {
+            throw new NotEnoughCardsException(getHandSize());
+        }
+        Card card = hand.get(index);
+        return card;
     }
     public void addCard(Card card){
         hand.add(card);
     }
     public int getHandSize() {
         return hand.size();
+    }
+    public int getId() {
+        return id;
+    }
+    public boolean getDead() {
+        return isDead;
+    }
+    public void setDead(boolean dead) {
+        isDead = dead;
     }
 }
