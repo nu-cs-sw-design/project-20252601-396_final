@@ -3,15 +3,25 @@ package model;
 import model.exceptions.InvalidMoveException;
 
 import java.util.List;
+import java.util.Random;
 
 public class Deck {
     private List<Card> cards;
+    private Random rand;
     private static final String DRAW_FROM_EMPTY_DECK_EXCEPTION =
-            "Cannot draw card from empty deck.";
+            "Cannot draw card from empty cards.";
 
-    public Deck(){}
+    public Deck(Random rand){
+        this.rand = rand;
+    }
     public void shuffle(){
-
+        //Fischer Yates Algorithm
+        for (int deckIndex = cards.size() - 1; deckIndex > 0; deckIndex--) {
+            int indexToSwap = rand.nextInt(deckIndex + 1);
+            Card temporaryCard = cards.get(indexToSwap);
+            cards.set(indexToSwap, cards.get(deckIndex));
+            cards.set(deckIndex, temporaryCard);
+        }
     }
     public Card draw(){
         if (cards.isEmpty()) {
@@ -24,8 +34,19 @@ public class Deck {
     public void insertAt(Card card, int index){
         cards.add(index, card);
     }
-    public void swapTopAndBottom(){
+    public void swapTopAndBottom() {
+        if (cards.size() < 2) {
+            throw new model.exceptions.NotEnoughCardsException(cards.size());
+        }
 
+        int bottomIndex = 0;
+        int topIndex = cards.size() - 1;
+
+        Card cardAtBottom = cards.get(bottomIndex);
+        Card cardAtTop = cards.get(topIndex);
+
+        cards.set(bottomIndex, cardAtTop);
+        cards.set(topIndex, cardAtBottom);
     }
     public int getDeckSize(){
         return cards.size();
