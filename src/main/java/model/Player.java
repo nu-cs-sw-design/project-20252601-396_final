@@ -2,15 +2,18 @@ package model;
 
 import model.exceptions.NotEnoughCardsException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
     private final int id;
     private List<Card> hand;
-    private boolean isDead = false;
+    private boolean isDead;
 
-    public Player(int id) {
+    public Player(int id, List<Card> hand) {
         this.id = id;
+        this.hand = (hand != null) ? hand : new ArrayList<>();
+        this.isDead = false;
     }
 
     public boolean hasCard(CardType cardType) {
@@ -22,9 +25,10 @@ public class Player {
         return false;
     }
     public void removeDefuse(){
-        for (Card card : hand) {
-            if (card.getType() == CardType.DEFUSE) {
-                hand.remove(card);
+        for (int i = 0; i < hand.size(); i++) {
+            if (hand.get(i).getType() == CardType.DEFUSE) {
+                hand.remove(i);
+                return;
             }
         }
     }
