@@ -2,17 +2,19 @@ package model;
 
 import model.exceptions.InvalidMoveException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Deck {
-    private List<Card> cards;
+    private ArrayList<Card> cards;
     private Random rand;
     private static final String DRAW_FROM_EMPTY_DECK_EXCEPTION =
             "Cannot draw card from empty cards.";
 
     public Deck(Random rand){
         this.rand = rand;
+        this.cards = new ArrayList<>();
     }
     public void shuffle(){
         //Fischer Yates Algorithm
