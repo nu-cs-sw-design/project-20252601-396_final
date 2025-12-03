@@ -68,7 +68,7 @@ public class Game implements GameContext {
         // Insert Exploding Kittens (Players - 1)
         int kittensToInsert = players.size() - 1;
         for (int i = 0; i < kittensToInsert; i++) {
-            deck.insertAt(CardFactory.createCard(CardType.EXPLODING_KITTEN), 0);
+            deck.insertAt(0, CardFactory.createCard(CardType.EXPLODING_KITTEN));
         }
 
         deck.shuffle();
@@ -222,7 +222,7 @@ public class Game implements GameContext {
         }
 
         // Insert exploding kitten back into deck
-        deck.insertAt(CardFactory.createCard(CardType.EXPLODING_KITTEN), index);
+        deck.insertAt(index, CardFactory.createCard(CardType.EXPLODING_KITTEN));
         notifyObservers("Exploding Kitten re-inserted into the deck.");
 
         // Resume Game

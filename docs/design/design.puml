@@ -95,7 +95,7 @@ package model {
         -cards: List<Card>
         +shuffle(): void
         +draw(): Card
-        +insertAt(card: Card, index: int): void
+        +insertAt(index: int, card: Card): void
         +swapTopAndBottom(): void
         +getDeckSize(): int
     }

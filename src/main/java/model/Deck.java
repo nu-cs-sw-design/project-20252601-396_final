@@ -12,9 +12,9 @@ public class Deck {
     private static final String DRAW_FROM_EMPTY_DECK_EXCEPTION =
             "Cannot draw card from empty cards.";
 
-    public Deck(Random rand){
+    public Deck(Random rand, ArrayList<Card> cards) {
         this.rand = rand;
-        this.cards = new ArrayList<>();
+        this.cards = cards;
     }
     public void shuffle(){
         //Fischer Yates Algorithm
@@ -33,8 +33,13 @@ public class Deck {
             return cards.remove(cards.size() - 1);
         }
     }
-    public void insertAt(Card card, int index){
-        cards.add(index, card);
+    public void insertAt(int index, Card card){
+        if (index < 0 || index > cards.size()) {
+            throw new InvalidMoveException("Cannot insert card: Index " + index + " is out of bounds.");
+        }
+        else{
+            cards.add(index, card);
+        }
     }
     public void swapTopAndBottom() {
         if (cards.size() < 2) {
@@ -52,5 +57,10 @@ public class Deck {
     }
     public int getDeckSize(){
         return cards.size();
+    }
+
+    // strictly used only for test
+    public ArrayList<Card> getCards(){
+        return cards;
     }
 }

@@ -1,160 +1,359 @@
-//package model;
-//
-//import domain.game.*;
-//import domain.game.Card;
-//import domain.game.CardType;
-//import domain.game.Deck;
-//import org.easymock.EasyMock;
-//import org.junit.jupiter.api.Test;
-//
-//import java.util.*;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertThrows;
-//
-//public class DeckTest
-//{
-//	@Test
-//	public void initializeDeckSizeInitializeSizeof2() {
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card secondCard = EasyMock.createMock(domain.game.Card.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		List<domain.game.Card> deckOfSize2 =
-//				new ArrayList<>(Arrays.asList(firstCard, secondCard));
-//		EasyMock.replay(rand, firstCard, secondCard, instantiator);
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize2, rand, gameType, 0, 2, instantiator);
-//
-//		assertEquals(deck.getDeckSize(), 2);
-//		EasyMock.verify(rand, firstCard, secondCard, instantiator);
-//	}
-//
-//	@Test
-//	public void initializeDeckSizeInitializeSizeof3() {
-//		final int maxDeckSize = 3;
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card secondCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card thirdCard = EasyMock.createMock(domain.game.Card.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		List<domain.game.Card> deckOfSize3 =
-//				new ArrayList<>(Arrays.asList(firstCard, secondCard, thirdCard));
-//		EasyMock.replay(rand, firstCard, secondCard, thirdCard, instantiator);
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize3, rand, gameType, 0,  maxDeckSize, instantiator);
-//
-//		assertEquals(deck.getDeckSize(), maxDeckSize);
-//		EasyMock.verify(rand, firstCard, secondCard, thirdCard, instantiator);
-//	}
-//
-//	@Test
-//	public void initializeDeckSizeInitializeSizeof0() {
-//		final int maxDeckSize = 3;
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		List<domain.game.Card> deckOfSize0 = new ArrayList<>();
-//		Random rand = EasyMock.createMock(Random.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		EasyMock.replay(rand, instantiator);
-//
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize0, rand, gameType, 0, maxDeckSize, instantiator);
-//		assertEquals(deck.getDeckSize(), 0);
-//		EasyMock.verify(rand, instantiator);
-//	}
-//
-//	@Test
-//	public void initializeDeckSizeInitializeSizeof2Dupes() {
-//		final int maxDeckSize = 3;
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		Random rand = EasyMock.createMock(Random.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		List<domain.game.Card> deckOfSize2 =
-//				new ArrayList<>(Arrays.asList(firstCard, firstCard));
-//		EasyMock.replay(rand, firstCard, instantiator);
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize2, rand, gameType, 0, maxDeckSize, instantiator);
-//
-//		assertEquals(deck.getDeckSize(), 2);
-//		EasyMock.verify(rand, firstCard, instantiator);
-//	}
-//
-//	@Test
-//	public void shuffleDeckTwoCards() {
-//		final int maxDeckSize = 3;
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card secondCard = EasyMock.createMock(domain.game.Card.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> deckOfSize2 =
-//				new ArrayList<>(Arrays.asList(secondCard, firstCard));
-//		EasyMock.expect(rand.nextInt(2)).andReturn(0);
-//		EasyMock.replay(rand, firstCard, secondCard, instantiator);
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize2, rand, gameType, 0, maxDeckSize, instantiator);
-//
-//		deck.shuffleDeck();
-//
-//		assertEquals(deck.getCardAtIndex(0), firstCard);
-//		EasyMock.verify(rand, firstCard, secondCard, instantiator);
-//	}
-//
-//	@Test
-//	public void shuffleDeckZeroCards() {
-//		final int maxDeckSize = 3;
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		Random rand = EasyMock.createMock(Random.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> deckOfSize2 = new ArrayList<>();
-//		EasyMock.replay(rand, instantiator);
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize2, rand, gameType, 0, maxDeckSize, instantiator);
-//
-//		deck.shuffleDeck();
-//
-//		assertEquals(deck.getDeckSize(), 0);
-//		EasyMock.verify(rand, instantiator);
-//	}
-//
-//	@Test
-//	public void shuffleDeckThreeCardsDupe() {
-//		final int maxDeckSize = 3;
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card secondCard = EasyMock.createMock(domain.game.Card.class);
-//		final int firstRandNumber = 3;
-//		final int secondRandNumber = 2;
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		List<domain.game.Card> deckOfSize3 =
-//				new ArrayList<>(Arrays.asList(firstCard, firstCard, secondCard));
-//		EasyMock.expect(rand.nextInt(firstRandNumber)).andReturn(0);
-//		EasyMock.expect(rand.nextInt(secondRandNumber)).andReturn(0);
-//		EasyMock.replay(rand, firstCard, secondCard, instantiator);
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
-//
-//		deck.shuffleDeck();
-//
-//		assertEquals(deck.getCardAtIndex(0), firstCard);
-//		assertEquals(deck.getCardAtIndex(1), secondCard);
-//		assertEquals(deck.getCardAtIndex(2), firstCard);
-//		EasyMock.verify(rand, firstCard, secondCard, instantiator);
-//	}
-//
+package model;
+
+import model.exceptions.InvalidMoveException;
+import model.exceptions.NotEnoughCardsException;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class DeckTest
+{
+	@Test
+	public void shuffleDeckTwoCards() {
+		Random rand = EasyMock.createMock(Random.class);
+		Card firstCard = EasyMock.createMock(Card.class);
+		Card secondCard = EasyMock.createMock(Card.class);
+		ArrayList<Card> deckOfSize2 =
+				new ArrayList<>(Arrays.asList(secondCard, firstCard));
+		EasyMock.expect(rand.nextInt(2)).andReturn(0);
+		EasyMock.replay(rand, firstCard, secondCard);
+		Deck deck = new Deck(rand, deckOfSize2);
+
+		deck.shuffle();
+
+		ArrayList<Card> expectedDeck =
+				new ArrayList<>(Arrays.asList(firstCard, secondCard));
+		assertEquals(expectedDeck, deck.getCards());
+		EasyMock.verify(rand, firstCard, secondCard);
+	}
+
+	@Test
+	public void shuffleDeckZeroCards() {
+		Random rand = EasyMock.createMock(Random.class);
+		ArrayList<Card> deckOfSize2 = new ArrayList<>();
+		EasyMock.replay(rand);
+		Deck deck = new Deck(rand, deckOfSize2);
+
+		deck.shuffle();
+
+		assertEquals(0, deck.getDeckSize());
+		EasyMock.verify(rand);
+	}
+
+	@Test
+	public void shuffleDeckThreeCardsDupe() {
+		Random rand = EasyMock.createMock(Random.class);
+		Card firstCard = EasyMock.createMock(Card.class);
+		Card secondCard = EasyMock.createMock(Card.class);
+		final int firstRandNumber = 3;
+		final int secondRandNumber = 2;
+
+		ArrayList<Card> deckOfSize3 =
+				new ArrayList<>(Arrays.asList(firstCard, firstCard, secondCard));
+		EasyMock.expect(rand.nextInt(firstRandNumber)).andReturn(0);
+		EasyMock.expect(rand.nextInt(secondRandNumber)).andReturn(0);
+		EasyMock.replay(rand, firstCard, secondCard);
+		Deck deck = new Deck(rand, deckOfSize3);
+
+		deck.shuffle();
+
+		ArrayList<Card> expectedDeck =
+				new ArrayList<>(Arrays.asList(firstCard, secondCard, firstCard));
+		assertEquals(expectedDeck, deck.getCards());
+		EasyMock.verify(rand, firstCard, secondCard);
+	}
+
+	@Test
+	public void drawCardEmptyDeckFromBottomThrowsException() {
+		Random rand = EasyMock.createMock(Random.class);
+		EasyMock.replay(rand);
+
+		ArrayList<Card> emptyDeck = new ArrayList<>();
+		Deck deck = new Deck(rand, emptyDeck);
+
+		String expectedMessage  = "Invalid move detected: Cannot draw card from empty cards.";
+
+		Exception exception = assertThrows(InvalidMoveException.class, () -> {
+			deck.draw();
+		});
+
+		String actualMessage = exception.getMessage();
+		assertEquals(expectedMessage, actualMessage);
+
+		EasyMock.verify(rand);
+	}
+
+	@Test
+	public void drawCardOneCardDeckReturnsOnlyCard() {
+		Card card1 = EasyMock.createMock(Card.class);
+		Random rand = EasyMock.createMock(Random.class);
+		EasyMock.replay(card1, rand);
+
+		ArrayList<Card> oneCardDeck = new ArrayList<>();
+		oneCardDeck.add(card1);
+
+		Deck deck = new Deck(rand, oneCardDeck);
+		Card cardDrawn = deck.draw();
+		assertEquals(cardDrawn, card1);
+		assertEquals(0, deck.getDeckSize());
+
+		EasyMock.verify(card1, rand);
+	}
+
+	@Test
+	public void drawCardTwoCardsDeckReturnsSecondCard() {
+		final int expectedDeckSize = 1;
+		Card card1 = EasyMock.createMock(Card.class);
+		Card card2 = EasyMock.createMock(Card.class);
+		Random rand = EasyMock.createMock(Random.class);
+		EasyMock.replay(card1, card2, rand);
+
+		ArrayList<Card> oneCardDeck = new ArrayList<>();
+		oneCardDeck.add(card1);
+		oneCardDeck.add(card2);
+
+		Deck deck = new Deck(rand, oneCardDeck);
+		Card cardDrawn = deck.draw();
+		assertEquals(cardDrawn, card2);
+		assertEquals(expectedDeckSize, deck.getDeckSize());
+
+		EasyMock.verify(card1, card2, rand);
+	}
+
+	@Test
+	public void drawCard42CardsDeckFromBottomReturnsFirstCard() {
+		final int expectedDeckSize = 41;
+		Random rand = EasyMock.createMock(Random.class);
+		Card cardStub = EasyMock.createMock(Card.class);
+		Card firstCard = EasyMock.createMock(Card.class);
+		EasyMock.replay(rand, cardStub);
+
+		ArrayList<Card> maxSizeDeck = new ArrayList<>
+				(Collections.nCopies(expectedDeckSize, cardStub));
+		maxSizeDeck.add(firstCard);
+
+		Deck deck = new Deck(rand, maxSizeDeck);
+		Card cardDrawn = deck.draw();
+		assertEquals(cardDrawn, firstCard);
+		assertEquals(expectedDeckSize, deck.getDeckSize());
+
+		EasyMock.verify(cardStub, rand);
+	}
+
+	@Test
+	public void insertAtStart(){
+		Random rand = EasyMock.createMock(Random.class);
+		Card existingCard = EasyMock.createMock(Card.class);
+		Card newCard = EasyMock.createMock(Card.class);
+		ArrayList<Card> deckList = new ArrayList<>(Arrays.asList(existingCard));
+		EasyMock.replay(rand, existingCard, newCard);
+		Deck deck = new Deck(rand, deckList);
+
+		deck.insertAt(0, newCard);
+
+		ArrayList<Card> expectedDeck = new ArrayList<>(Arrays.asList(newCard, existingCard));
+		assertEquals(expectedDeck, deck.getCards());
+		EasyMock.verify(rand, existingCard, newCard);
+	}
+
+	@Test
+	public void insertAtMiddle(){
+		Random rand = EasyMock.createMock(Random.class);
+		Card c1 = EasyMock.createMock(Card.class);
+		Card c2 = EasyMock.createMock(Card.class);
+		Card newCard = EasyMock.createMock(Card.class);
+		ArrayList<Card> deckList = new ArrayList<>(Arrays.asList(c1, c2));
+		EasyMock.replay(rand, c1, c2, newCard);
+		Deck deck = new Deck(rand, deckList);
+
+		deck.insertAt(1, newCard);
+
+		ArrayList<Card> expectedDeck = new ArrayList<>(Arrays.asList(c1, newCard, c2));
+		assertEquals(expectedDeck, deck.getCards());
+		EasyMock.verify(rand, c1, c2, newCard);
+	}
+
+	@Test
+	public void insertAtEnd(){
+		Random rand = EasyMock.createMock(Random.class);
+		Card c1 = EasyMock.createMock(Card.class);
+		Card newCard = EasyMock.createMock(Card.class);
+		ArrayList<Card> deckList = new ArrayList<>(Arrays.asList(c1));
+		EasyMock.replay(rand, c1, newCard);
+		Deck deck = new Deck(rand, deckList);
+
+		deck.insertAt(1, newCard);
+
+		ArrayList<Card> expectedDeck = new ArrayList<>(Arrays.asList(c1, newCard));
+		assertEquals(expectedDeck, deck.getCards());
+		EasyMock.verify(rand, c1, newCard);
+	}
+
+	@Test
+	public void insertAtInvalidNegativeIndex() {
+		Random rand = EasyMock.createMock(Random.class);
+		Card c1 = EasyMock.createMock(Card.class);
+		Card newCard = EasyMock.createMock(Card.class);
+		ArrayList<Card> deckList = new ArrayList<>(Arrays.asList(c1));
+		EasyMock.replay(rand, c1, newCard);
+		Deck deck = new Deck(rand, deckList);
+
+		String expectedMessage  = "Invalid move detected: Cannot insert card: Index -1 is out of bounds.";
+		Exception exception = assertThrows(InvalidMoveException.class, () -> {
+			deck.insertAt(-1, newCard);
+		});
+
+		String actualMessage = exception.getMessage();
+		assertEquals(expectedMessage, actualMessage);
+
+		EasyMock.verify(rand, c1, newCard);
+	}
+
+	@Test
+	public void insertAtInvalidIndexOutOfBounds() {
+		Random rand = EasyMock.createMock(Random.class);
+		Card c1 = EasyMock.createMock(Card.class);
+		Card newCard = EasyMock.createMock(Card.class);
+		ArrayList<Card> deckList = new ArrayList<>(Arrays.asList(c1));
+		EasyMock.replay(rand, c1, newCard);
+		Deck deck = new Deck(rand, deckList);
+
+		String expectedMessage  = "Invalid move detected: Cannot insert card: Index 2 is out of bounds.";
+		Exception exception = assertThrows(InvalidMoveException.class, () -> {
+			deck.insertAt(2, newCard);
+		});
+
+		String actualMessage = exception.getMessage();
+		assertEquals(expectedMessage, actualMessage);
+		EasyMock.verify(rand, c1, newCard);
+	}
+
+	@Test
+	public void swapTopAndBottomTwoCards() {
+		Random rand = EasyMock.createMock(Random.class);
+		Card cardAtBottom = EasyMock.createMock(Card.class);
+		Card cardAtTop = EasyMock.createMock(Card.class);
+		ArrayList<Card> deckList = new ArrayList<>(Arrays.asList(cardAtBottom, cardAtTop));
+		EasyMock.replay(rand, cardAtBottom, cardAtTop);
+		Deck deck = new Deck(rand, deckList);
+
+		deck.swapTopAndBottom();
+
+		ArrayList<Card> expectedDeck = new ArrayList<>(Arrays.asList(cardAtTop, cardAtBottom));
+		assertEquals(expectedDeck, deck.getCards());
+
+		EasyMock.verify(rand, cardAtBottom, cardAtTop);
+	}
+
+	@Test
+	public void swapTopAndBottomThreeCards() {
+		Random rand = EasyMock.createMock(Random.class);
+		Card cardAtBottom = EasyMock.createMock(Card.class);
+		Card middleCard = EasyMock.createMock(Card.class);
+		Card cardAtTop = EasyMock.createMock(Card.class);
+		ArrayList<Card> deckList = new ArrayList<>(Arrays.asList(cardAtBottom, middleCard, cardAtTop));
+		EasyMock.replay(rand, cardAtBottom, middleCard, cardAtTop);
+		Deck deck = new Deck(rand, deckList);
+
+		deck.swapTopAndBottom();
+
+		ArrayList<Card> expectedDeck = new ArrayList<>(Arrays.asList(cardAtTop, middleCard, cardAtBottom));
+		assertEquals(expectedDeck, deck.getCards());
+
+		EasyMock.verify(rand, cardAtBottom, middleCard, cardAtTop);
+	}
+
+	@Test
+	public void swapTopAndBottomNotEnoughCards() {
+		Random rand = EasyMock.createMock(Random.class);
+		Card oneCard = EasyMock.createMock(Card.class);
+		ArrayList<Card> deckList = new ArrayList<>(Arrays.asList(oneCard));
+		EasyMock.replay(rand, oneCard);
+		Deck deck = new Deck(rand, deckList);
+
+		Exception exception = assertThrows(NotEnoughCardsException.class, () -> {
+			deck.swapTopAndBottom();
+		});
+
+		 String expectedMessage = "Not enough cards to perform action. Needed at least 2, but deck has 1.";
+		 assertEquals(expectedMessage, exception.getMessage());
+
+		EasyMock.verify(rand, oneCard);
+	}
+
+	@Test
+	public void initializeDeckSizeInitializeSizeof2() {
+		Random rand = EasyMock.createMock(Random.class);
+		Card firstCard = EasyMock.createMock(Card.class);
+		Card secondCard = EasyMock.createMock(Card.class);
+
+		ArrayList<Card> deckOfSize2 =
+				new ArrayList<>(Arrays.asList(firstCard, secondCard));
+		EasyMock.replay(rand, firstCard, secondCard);
+		Deck deck = new Deck(rand, deckOfSize2);
+
+		assertEquals(2, deck.getDeckSize());
+		EasyMock.verify(rand, firstCard, secondCard);
+	}
+
+	@Test
+	public void initializeDeckSizeInitializeSizeof3() {
+		final int maxDeckSize = 3;
+		Random rand = EasyMock.createMock(Random.class);
+		Card firstCard = EasyMock.createMock(Card.class);
+		Card secondCard = EasyMock.createMock(Card.class);
+		Card thirdCard = EasyMock.createMock(Card.class);
+
+		ArrayList<Card> deckOfSize3 =
+				new ArrayList<>(Arrays.asList(firstCard, secondCard, thirdCard));
+		EasyMock.replay(rand, firstCard, secondCard, thirdCard);
+		Deck deck = new Deck(rand, deckOfSize3);
+
+		assertEquals(maxDeckSize, deck.getDeckSize());
+		EasyMock.verify(rand, firstCard, secondCard, thirdCard);
+	}
+
+	@Test
+	public void initializeDeckSizeInitializeSizeof0() {
+		ArrayList<Card> deckOfSize0 = new ArrayList<>();
+		Random rand = EasyMock.createMock(Random.class);
+
+		EasyMock.replay(rand);
+
+		Deck deck = new Deck(rand, deckOfSize0);
+		assertEquals(0, deck.getDeckSize());
+		EasyMock.verify(rand);
+	}
+
+	@Test
+	public void initializeDeckSizeInitializeSizeof2Dupes() {
+		Card firstCard = EasyMock.createMock(Card.class);
+		Random rand = EasyMock.createMock(Random.class);
+		ArrayList<Card> deckOfSize2 =
+				new ArrayList<>(Arrays.asList(firstCard, firstCard));
+		EasyMock.replay(rand, firstCard);
+		Deck deck = new Deck(rand, deckOfSize2);
+
+		assertEquals(2, deck.getDeckSize());
+		EasyMock.verify(rand, firstCard);
+	}
+
 //	@Test
 //	public void insertCardEmptyDeck() {
 //		final int maxDeckSize = 3;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK)).andReturn(expectedCard);
-//		domain.game.CardType cardType = domain.game.CardType.ATTACK;
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK)).andReturn(expectedCard);
+//		CardType cardType = CardType.ATTACK;
 //
-//		List<domain.game.Card> deckOfSize3 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
+//		List<Card> deckOfSize3 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
 //		EasyMock.replay(rand, instantiator, expectedCard);
 //		deck.insertCard(cardType, 1, false);
 //		assertEquals(1, deck.getDeckSize());
@@ -168,17 +367,17 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK))
 //				.andReturn(expectedCard);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCardTwo);
-//		domain.game.CardType firstCard = domain.game.CardType.ATTACK;
-//		domain.game.CardType secondCard = domain.game.CardType.SEE_THE_FUTURE;
-//		List<domain.game.Card> deckOfSize2 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize2, rand, gameType, 0, maxDeckSize, instantiator);
+//		CardType firstCard = CardType.ATTACK;
+//		CardType secondCard = CardType.SEE_THE_FUTURE;
+//		List<Card> deckOfSize2 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize2, rand, gameType, 0, maxDeckSize, instantiator);
 //		EasyMock.replay(rand, instantiator, expectedCard, expectedCardTwo);
 //		deck.insertCard(firstCard, 1, false);
 //		deck.insertCard(secondCard, 1, false);
@@ -193,20 +392,20 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCard);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SKIP))
+//		EasyMock.expect(instantiator.createCard(CardType.SKIP))
 //				.andReturn(expectedCardTwo).times(2);
 //
 //
-//		domain.game.CardType firstCard = domain.game.CardType.SEE_THE_FUTURE;
-//		domain.game.CardType secondCard = domain.game.CardType.SKIP;
+//		CardType firstCard = CardType.SEE_THE_FUTURE;
+//		CardType secondCard = CardType.SKIP;
 //
-//		List<domain.game.Card> deckOfSize3 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
+//		List<Card> deckOfSize3 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
 //		EasyMock.replay(rand, instantiator, expectedCard, expectedCardTwo);
 //		deck.insertCard(firstCard, 1, false);
 //		deck.insertCard(secondCard, 1, false);
@@ -224,21 +423,21 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCard);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK))
 //				.andReturn(expectedCardTwo).times(2);
 //
-//		domain.game.CardType firstCard = domain.game.CardType.SEE_THE_FUTURE;
-//		domain.game.CardType secondCard = domain.game.CardType.ATTACK;
-//		domain.game.CardType thirdCard = domain.game.CardType.ATTACK;
-//		domain.game.CardType extraCard = domain.game.CardType.ATTACK;
+//		CardType firstCard = CardType.SEE_THE_FUTURE;
+//		CardType secondCard = CardType.ATTACK;
+//		CardType thirdCard = CardType.ATTACK;
+//		CardType extraCard = CardType.ATTACK;
 //
-//		List<domain.game.Card> deckOfSize3 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
+//		List<Card> deckOfSize3 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
 //
 //		EasyMock.replay(rand, instantiator, expectedCard, expectedCardTwo);
 //
@@ -261,26 +460,26 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardThree = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFour = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
+//		Card expectedCardThree = EasyMock.createMock(Card.class);
+//		Card expectedCardFour = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCard);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK))
 //				.andReturn(expectedCardTwo);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.NOPE))
+//		EasyMock.expect(instantiator.createCard(CardType.NOPE))
 //				.andReturn(expectedCardThree);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SKIP))
+//		EasyMock.expect(instantiator.createCard(CardType.SKIP))
 //				.andReturn(expectedCardFour).times(2);
 //
-//		domain.game.CardType firstCard = domain.game.CardType.SEE_THE_FUTURE;
-//		domain.game.CardType secondCard = domain.game.CardType.ATTACK;
-//		domain.game.CardType thirdCard = domain.game.CardType.NOPE;
-//		domain.game.CardType newCard = domain.game.CardType.SKIP;
-//		List<domain.game.Card> deckOfSize8 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize8, rand, gameType, 0, maxDeckSize, instantiator);
+//		CardType firstCard = CardType.SEE_THE_FUTURE;
+//		CardType secondCard = CardType.ATTACK;
+//		CardType thirdCard = CardType.NOPE;
+//		CardType newCard = CardType.SKIP;
+//		List<Card> deckOfSize8 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize8, rand, gameType, 0, maxDeckSize, instantiator);
 //
 //		EasyMock.replay(rand, instantiator, expectedCard,
 //				expectedCardTwo, expectedCardThree, expectedCardFour);
@@ -300,13 +499,13 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK)).andReturn(expectedCard);
-//		domain.game.CardType cardType = domain.game.CardType.ATTACK;
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK)).andReturn(expectedCard);
+//		CardType cardType = CardType.ATTACK;
 //
-//		List<domain.game.Card> deckOfSize3 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
+//		List<Card> deckOfSize3 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
 //		EasyMock.replay(rand, instantiator, expectedCard);
 //		deck.insertCard(cardType, 1, true);
 //		assertEquals(1, deck.getDeckSize());
@@ -321,17 +520,17 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK))
 //				.andReturn(expectedCard);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCardTwo);
-//		domain.game.CardType firstCard = domain.game.CardType.ATTACK;
-//		domain.game.CardType secondCard = domain.game.CardType.SEE_THE_FUTURE;
-//		List<domain.game.Card> deckOfSize2 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize2, rand, gameType, 0, maxDeckSize, instantiator);
+//		CardType firstCard = CardType.ATTACK;
+//		CardType secondCard = CardType.SEE_THE_FUTURE;
+//		List<Card> deckOfSize2 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize2, rand, gameType, 0, maxDeckSize, instantiator);
 //		EasyMock.replay(rand, instantiator, expectedCard, expectedCardTwo);
 //		deck.insertCard(firstCard, 1, true);
 //		deck.insertCard(secondCard, 1, true);
@@ -346,20 +545,20 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCard);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SKIP))
+//		EasyMock.expect(instantiator.createCard(CardType.SKIP))
 //				.andReturn(expectedCardTwo).times(2);
 //
 //
-//		domain.game.CardType firstCard = domain.game.CardType.SEE_THE_FUTURE;
-//		domain.game.CardType secondCard = domain.game.CardType.SKIP;
+//		CardType firstCard = CardType.SEE_THE_FUTURE;
+//		CardType secondCard = CardType.SKIP;
 //
-//		List<domain.game.Card> deckOfSize3 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
+//		List<Card> deckOfSize3 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
 //		EasyMock.replay(rand, instantiator, expectedCard, expectedCardTwo);
 //		deck.insertCard(firstCard, 1, true);
 //		deck.insertCard(secondCard, 1, true);
@@ -377,21 +576,21 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCard);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK))
 //				.andReturn(expectedCardTwo).times(2);
 //
-//		domain.game.CardType firstCard = domain.game.CardType.SEE_THE_FUTURE;
-//		domain.game.CardType secondCard = domain.game.CardType.ATTACK;
-//		domain.game.CardType thirdCard = domain.game.CardType.ATTACK;
-//		domain.game.CardType extraCard = domain.game.CardType.ATTACK;
+//		CardType firstCard = CardType.SEE_THE_FUTURE;
+//		CardType secondCard = CardType.ATTACK;
+//		CardType thirdCard = CardType.ATTACK;
+//		CardType extraCard = CardType.ATTACK;
 //
-//		List<domain.game.Card> deckOfSize3 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
+//		List<Card> deckOfSize3 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize3, rand, gameType, 0, maxDeckSize, instantiator);
 //
 //		EasyMock.replay(rand, instantiator, expectedCard, expectedCardTwo);
 //
@@ -413,26 +612,26 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardThree = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFour = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
+//		Card expectedCardThree = EasyMock.createMock(Card.class);
+//		Card expectedCardFour = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCard);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK))
 //				.andReturn(expectedCardTwo);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.NOPE))
+//		EasyMock.expect(instantiator.createCard(CardType.NOPE))
 //				.andReturn(expectedCardThree);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SKIP))
+//		EasyMock.expect(instantiator.createCard(CardType.SKIP))
 //				.andReturn(expectedCardFour).times(2);
 //
-//		domain.game.CardType firstCard = domain.game.CardType.SEE_THE_FUTURE;
-//		domain.game.CardType secondCard = domain.game.CardType.ATTACK;
-//		domain.game.CardType thirdCard = domain.game.CardType.NOPE;
-//		domain.game.CardType newCard = domain.game.CardType.SKIP;
-//		List<domain.game.Card> deckOfSize8 = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(deckOfSize8, rand, gameType, 0, maxDeckSize, instantiator);
+//		CardType firstCard = CardType.SEE_THE_FUTURE;
+//		CardType secondCard = CardType.ATTACK;
+//		CardType thirdCard = CardType.NOPE;
+//		CardType newCard = CardType.SKIP;
+//		List<Card> deckOfSize8 = new ArrayList<>();
+//		Deck deck = new Deck(deckOfSize8, rand, gameType, 0, maxDeckSize, instantiator);
 //
 //		EasyMock.replay(rand, instantiator, expectedCard,
 //				expectedCardTwo, expectedCardThree, expectedCardFour);
@@ -461,64 +660,64 @@
 //		GameType gameType = GameType.STREAKING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardThree = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFour = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFive = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardSix = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardSeven = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardEight = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardNine = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardEleven = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwelve = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardThirteen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFourteen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFifteen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardSixteen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardSeventeen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardEighteen = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
+//		Card expectedCardThree = EasyMock.createMock(Card.class);
+//		Card expectedCardFour = EasyMock.createMock(Card.class);
+//		Card expectedCardFive = EasyMock.createMock(Card.class);
+//		Card expectedCardSix = EasyMock.createMock(Card.class);
+//		Card expectedCardSeven = EasyMock.createMock(Card.class);
+//		Card expectedCardEight = EasyMock.createMock(Card.class);
+//		Card expectedCardNine = EasyMock.createMock(Card.class);
+//		Card expectedCardTen = EasyMock.createMock(Card.class);
+//		Card expectedCardEleven = EasyMock.createMock(Card.class);
+//		Card expectedCardTwelve = EasyMock.createMock(Card.class);
+//		Card expectedCardThirteen = EasyMock.createMock(Card.class);
+//		Card expectedCardFourteen = EasyMock.createMock(Card.class);
+//		Card expectedCardFifteen = EasyMock.createMock(Card.class);
+//		Card expectedCardSixteen = EasyMock.createMock(Card.class);
+//		Card expectedCardSeventeen = EasyMock.createMock(Card.class);
+//		Card expectedCardEighteen = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCard).times(fiveCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK))
 //				.andReturn(expectedCardTwo).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SHUFFLE))
+//		EasyMock.expect(instantiator.createCard(CardType.SHUFFLE))
 //				.andReturn(expectedCardThree).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SKIP))
+//		EasyMock.expect(instantiator.createCard(CardType.SKIP))
 //				.andReturn(expectedCardFour).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.NOPE))
+//		EasyMock.expect(instantiator.createCard(CardType.NOPE))
 //				.andReturn(expectedCardFive).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_ONE))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_ONE))
 //				.andReturn(expectedCardSix).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.DEFUSE))
+//		EasyMock.expect(instantiator.createCard(CardType.DEFUSE))
 //				.andReturn(expectedCardSeven).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.STREAKING_KITTEN))
+//		EasyMock.expect(instantiator.createCard(CardType.STREAKING_KITTEN))
 //				.andReturn(expectedCardEight);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ALTER_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.ALTER_THE_FUTURE))
 //				.andReturn(expectedCardNine);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CATOMIC_BOMB))
+//		EasyMock.expect(instantiator.createCard(CardType.CATOMIC_BOMB))
 //				.andReturn(expectedCardTen);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SUPER_SKIP))
+//		EasyMock.expect(instantiator.createCard(CardType.SUPER_SKIP))
 //				.andReturn(expectedCardEleven);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SWAP_TOP_AND_BOTTOM))
+//		EasyMock.expect(instantiator.createCard(CardType.SWAP_TOP_AND_BOTTOM))
 //				.andReturn(expectedCardTwelve).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.MARK))
+//		EasyMock.expect(instantiator.createCard(CardType.MARK))
 //				.andReturn(expectedCardThirteen).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CURSE_OF_THE_CAT_BUTT))
+//		EasyMock.expect(instantiator.createCard(CardType.CURSE_OF_THE_CAT_BUTT))
 //				.andReturn(expectedCardFourteen).times(twoCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.GARBAGE_COLLECTION))
+//		EasyMock.expect(instantiator.createCard(CardType.GARBAGE_COLLECTION))
 //				.andReturn(expectedCardFifteen).times(oneCard);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_TWO))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_TWO))
 //				.andReturn(expectedCardSixteen).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_THREE))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_THREE))
 //				.andReturn(expectedCardSeventeen).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_FOUR))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_FOUR))
 //				.andReturn(expectedCardEighteen).times(fourCards);
 //
-//		List<domain.game.Card> initialDeck = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(initialDeck, rand, gameType,
+//		List<Card> initialDeck = new ArrayList<>();
+//		Deck deck = new Deck(initialDeck, rand, gameType,
 //				numberOfPlayers, maxDeckSize, instantiator);
 //		deck.chooseGameType(GameType.STREAKING_KITTENS);
 //
@@ -558,37 +757,37 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardThree = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFour = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFive = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardSix = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardSeven = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardEight = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardNine = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
+//		Card expectedCardThree = EasyMock.createMock(Card.class);
+//		Card expectedCardFour = EasyMock.createMock(Card.class);
+//		Card expectedCardFive = EasyMock.createMock(Card.class);
+//		Card expectedCardSix = EasyMock.createMock(Card.class);
+//		Card expectedCardSeven = EasyMock.createMock(Card.class);
+//		Card expectedCardEight = EasyMock.createMock(Card.class);
+//		Card expectedCardNine = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCard).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK))
 //				.andReturn(expectedCardTwo).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SHUFFLE))
+//		EasyMock.expect(instantiator.createCard(CardType.SHUFFLE))
 //				.andReturn(expectedCardThree).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SKIP))
+//		EasyMock.expect(instantiator.createCard(CardType.SKIP))
 //				.andReturn(expectedCardFour).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.NOPE))
+//		EasyMock.expect(instantiator.createCard(CardType.NOPE))
 //				.andReturn(expectedCardFive).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_ONE))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_ONE))
 //				.andReturn(expectedCardSix).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_TWO))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_TWO))
 //				.andReturn(expectedCardSeven).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_THREE))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_THREE))
 //				.andReturn(expectedCardEight).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_FOUR))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_FOUR))
 //				.andReturn(expectedCardNine).times(fourCards);
 //
-//		List<domain.game.Card> initialDeck = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(initialDeck, rand, gameType,
+//		List<Card> initialDeck = new ArrayList<>();
+//		Deck deck = new Deck(initialDeck, rand, gameType,
 //				numberOfPlayers, maxDeckSize, instantiator);
 //		deck.chooseGameType(GameType.EXPLODING_KITTENS);
 //		EasyMock.replay(rand, instantiator, expectedCard,
@@ -618,56 +817,56 @@
 //		GameType gameType = GameType.IMPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Card expectedCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwo = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardThree = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFour = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFive = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardSix = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardSeven = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardEight = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardNine = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardEleven = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardTwelve = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardThirteen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFourteen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardFifteen = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card expectedCardSixteen = EasyMock.createMock(domain.game.Card.class);
+//		Card expectedCard = EasyMock.createMock(Card.class);
+//		Card expectedCardTwo = EasyMock.createMock(Card.class);
+//		Card expectedCardThree = EasyMock.createMock(Card.class);
+//		Card expectedCardFour = EasyMock.createMock(Card.class);
+//		Card expectedCardFive = EasyMock.createMock(Card.class);
+//		Card expectedCardSix = EasyMock.createMock(Card.class);
+//		Card expectedCardSeven = EasyMock.createMock(Card.class);
+//		Card expectedCardEight = EasyMock.createMock(Card.class);
+//		Card expectedCardNine = EasyMock.createMock(Card.class);
+//		Card expectedCardTen = EasyMock.createMock(Card.class);
+//		Card expectedCardEleven = EasyMock.createMock(Card.class);
+//		Card expectedCardTwelve = EasyMock.createMock(Card.class);
+//		Card expectedCardThirteen = EasyMock.createMock(Card.class);
+//		Card expectedCardFourteen = EasyMock.createMock(Card.class);
+//		Card expectedCardFifteen = EasyMock.createMock(Card.class);
+//		Card expectedCardSixteen = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SEE_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.SEE_THE_FUTURE))
 //				.andReturn(expectedCard).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.ATTACK))
 //				.andReturn(expectedCardTwo).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SHUFFLE))
+//		EasyMock.expect(instantiator.createCard(CardType.SHUFFLE))
 //				.andReturn(expectedCardThree).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.SKIP))
+//		EasyMock.expect(instantiator.createCard(CardType.SKIP))
 //				.andReturn(expectedCardFour).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.NOPE))
+//		EasyMock.expect(instantiator.createCard(CardType.NOPE))
 //				.andReturn(expectedCardFive).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_ONE))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_ONE))
 //				.andReturn(expectedCardSix).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_TWO))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_TWO))
 //				.andReturn(expectedCardFourteen).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_THREE))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_THREE))
 //				.andReturn(expectedCardFifteen).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.CAT_FOUR))
+//		EasyMock.expect(instantiator.createCard(CardType.CAT_FOUR))
 //				.andReturn(expectedCardSixteen).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.DEFUSE))
+//		EasyMock.expect(instantiator.createCard(CardType.DEFUSE))
 //				.andReturn(expectedCardSeven).times(twoCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.FERAL_CAT))
+//		EasyMock.expect(instantiator.createCard(CardType.FERAL_CAT))
 //				.andReturn(expectedCardNine).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.REVERSE))
+//		EasyMock.expect(instantiator.createCard(CardType.REVERSE))
 //				.andReturn(expectedCardTen).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.TARGETED_ATTACK))
+//		EasyMock.expect(instantiator.createCard(CardType.TARGETED_ATTACK))
 //				.andReturn(expectedCardEleven).times(threeCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.DRAW_FROM_THE_BOTTOM))
+//		EasyMock.expect(instantiator.createCard(CardType.DRAW_FROM_THE_BOTTOM))
 //				.andReturn(expectedCardTwelve).times(fourCards);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.ALTER_THE_FUTURE))
+//		EasyMock.expect(instantiator.createCard(CardType.ALTER_THE_FUTURE))
 //				.andReturn(expectedCardThirteen).times(fourCards);
 //
-//		ArrayList<domain.game.Card> initialDeck = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(initialDeck, rand, gameType,
+//		ArrayList<Card> initialDeck = new ArrayList<>();
+//		Deck deck = new Deck(initialDeck, rand, gameType,
 //				numberOfPlayers, maxDeckSize, instantiator);
 //		deck.chooseGameType(GameType.IMPLODING_KITTENS);
 //		EasyMock.replay(rand, instantiator, expectedCard,
@@ -700,13 +899,13 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> emptyDeck = EasyMock.createMock(List.class);
+//		List<Card> emptyDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(emptyDeck.isEmpty()).andReturn(true);
 //
 //		EasyMock.replay(rand, instantiator, emptyDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(emptyDeck, rand, gameType,
+//		Deck deck = new Deck(emptyDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
 //		String expectedMessage  = "Cannot draw card from empty deck.";
@@ -725,10 +924,10 @@
 //	public void drawCardOneCardDeckReturnsOnlyCard() {
 //		final int maxDeckSize = 42;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> oneCardDeck = EasyMock.createMock(List.class);
+//		List<Card> oneCardDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(oneCardDeck.isEmpty()).andReturn(false).times(1);
 //		EasyMock.expect(oneCardDeck.size()).andReturn(1).times(1);
@@ -737,7 +936,7 @@
 //
 //		EasyMock.replay(card1, rand, instantiator, oneCardDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(oneCardDeck, rand, gameType,
+//		Deck deck = new Deck(oneCardDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
 //		assertEquals(deck.drawCard(), card1);
@@ -751,10 +950,10 @@
 //		final int maxDeckSize = 42;
 //		final int expectedDeckSize = 1;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> twoCardsDeck = EasyMock.createMock(List.class);
+//		List<Card> twoCardsDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(twoCardsDeck.isEmpty()).andReturn(false).times(1);
 //		EasyMock.expect(twoCardsDeck.size()).andReturn(2).times(1);
@@ -763,7 +962,7 @@
 //
 //		EasyMock.replay(card2, rand, instantiator, twoCardsDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(twoCardsDeck, rand, gameType,
+//		Deck deck = new Deck(twoCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //		assertEquals(deck.drawCard(), card2);
 //		assertEquals(expectedDeckSize, deck.getDeckSize());
@@ -777,9 +976,9 @@
 //		final int expectedDeckSize = 41;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card lastCard = EasyMock.createMock(domain.game.Card.class);
+//		Card lastCard = EasyMock.createMock(Card.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> maxSizeDeck = EasyMock.createMock(List.class);
+//		List<Card> maxSizeDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(maxSizeDeck.isEmpty()).andReturn(false).times(1);
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(maxDeckSize).times(1);
@@ -788,9 +987,9 @@
 //
 //		EasyMock.replay(rand, instantiator, maxSizeDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
+//		Deck deck = new Deck(maxSizeDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
-//		domain.game.Card cardDrawn = deck.drawCard();
+//		Card cardDrawn = deck.drawCard();
 //		assertEquals(cardDrawn, lastCard);
 //		assertEquals(expectedDeckSize, deck.getDeckSize());
 //
@@ -803,9 +1002,9 @@
 //		final int expectedDeckSize = 55;
 //		GameType gameType = GameType.STREAKING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card lastCard = EasyMock.createMock(domain.game.Card.class);
+//		Card lastCard = EasyMock.createMock(Card.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> maxSizeDeck = EasyMock.createMock(List.class);
+//		List<Card> maxSizeDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(maxSizeDeck.isEmpty()).andReturn(false).times(1);
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(maxDeckSize).times(1);
@@ -814,9 +1013,9 @@
 //
 //		EasyMock.replay(rand, instantiator, maxSizeDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
+//		Deck deck = new Deck(maxSizeDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
-//		domain.game.Card cardDrawn = deck.drawCard();
+//		Card cardDrawn = deck.drawCard();
 //		assertEquals(cardDrawn, lastCard);
 //		assertEquals(expectedDeckSize, deck.getDeckSize());
 //
@@ -829,9 +1028,9 @@
 //		final int expectedDeckSize = 61;
 //		GameType gameType = GameType.IMPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card lastCard = EasyMock.createMock(domain.game.Card.class);
+//		Card lastCard = EasyMock.createMock(Card.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> maxSizeDeck = EasyMock.createMock(List.class);
+//		List<Card> maxSizeDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(maxSizeDeck.isEmpty()).andReturn(false).times(1);
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(maxDeckSize).times(1);
@@ -840,163 +1039,15 @@
 //
 //		EasyMock.replay(rand, instantiator, maxSizeDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
+//		Deck deck = new Deck(maxSizeDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
-//		domain.game.Card cardDrawn = deck.drawCard();
+//		Card cardDrawn = deck.drawCard();
 //		assertEquals(cardDrawn, lastCard);
 //		assertEquals(expectedDeckSize, deck.getDeckSize());
 //
 //		EasyMock.verify(rand, instantiator, maxSizeDeck);
 //	}
-//
-//	@Test
-//	public void drawCardEmptyDeckFromBottomThrowsException() {
-//		final int maxDeckSize = 42;
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		Random rand = EasyMock.createMock(Random.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		EasyMock.replay(rand, instantiator);
-//
-//		List<domain.game.Card> emptyDeck = new ArrayList<>();
-//		domain.game.Deck deck = new domain.game.Deck(emptyDeck, rand, gameType,
-//				0, maxDeckSize, instantiator);
-//
-//		String expectedMessage  = "Cannot draw card from empty deck.";
-//
-//		Exception exception = assertThrows(UnsupportedOperationException.class, () -> {
-//			deck.drawCardFromBottom();
-//		});
-//
-//		String actualMessage = exception.getMessage();
-//		assertEquals(expectedMessage, actualMessage);
-//
-//		EasyMock.verify(rand, instantiator);
-//	}
-//
-//	@Test
-//	public void drawCardOneCardDeckFromBottomReturnsOnlyCard() {
-//		final int maxDeckSize = 42;
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		Random rand = EasyMock.createMock(Random.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		EasyMock.replay(card1, rand, instantiator);
-//
-//		List<domain.game.Card> oneCardDeck = new ArrayList<>();
-//		oneCardDeck.add(card1);
-//
-//		domain.game.Deck deck = new domain.game.Deck(oneCardDeck, rand, gameType,
-//				0, maxDeckSize, instantiator);
-//		domain.game.Card cardDrawn = deck.drawCardFromBottom();
-//		assertEquals(cardDrawn, card1);
-//		assertEquals(0, deck.getDeckSize());
-//
-//		EasyMock.verify(card1, rand, instantiator);
-//	}
-//
-//	@Test
-//	public void drawCardTwoCardsDeckFromBottomReturnsFirstCard() {
-//		final int maxDeckSize = 42;
-//		final int expectedDeckSize = 1;
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
-//		Random rand = EasyMock.createMock(Random.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		EasyMock.replay(card1, card2, rand, instantiator);
-//
-//		List<domain.game.Card> oneCardDeck = new ArrayList<>();
-//		oneCardDeck.add(card1);
-//		oneCardDeck.add(card2);
-//
-//		domain.game.Deck deck = new domain.game.Deck(oneCardDeck, rand, gameType,
-//				0, maxDeckSize, instantiator);
-//		domain.game.Card cardDrawn = deck.drawCardFromBottom();
-//		assertEquals(cardDrawn, card1);
-//		assertEquals(expectedDeckSize, deck.getDeckSize());
-//
-//		EasyMock.verify(card1, card2, rand, instantiator);
-//	}
-//
-//	@Test
-//	public void drawCard42CardsDeckFromBottomReturnsFirstCard() {
-//		final int maxDeckSize = 42;
-//		final int expectedDeckSize = 41;
-//		GameType gameType = GameType.EXPLODING_KITTENS;
-//		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card cardStub = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		EasyMock.replay(rand, cardStub, instantiator);
-//
-//		List<domain.game.Card> maxSizeDeck = new ArrayList<>
-//				(Collections.nCopies(expectedDeckSize, cardStub));
-//		maxSizeDeck.add(0, firstCard);
-//
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
-//				0, maxDeckSize, instantiator);
-//		domain.game.Card cardDrawn = deck.drawCardFromBottom();
-//		assertEquals(cardDrawn, firstCard);
-//		assertEquals(expectedDeckSize, deck.getDeckSize());
-//
-//		EasyMock.verify(cardStub, rand, instantiator);
-//	}
-//
-//	@Test
-//	public void drawCard56CardsDeckFromBottomReturnsFirstCard() {
-//		final int maxDeckSize = 56;
-//		final int expectedDeckSize = 55;
-//		GameType gameType = GameType.STREAKING_KITTENS;
-//		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card cardStub = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		EasyMock.replay(rand, cardStub, instantiator);
-//
-//		List<domain.game.Card> maxSizeDeck = new ArrayList<>
-//				(Collections.nCopies(expectedDeckSize, cardStub));
-//
-//		maxSizeDeck.add(0, firstCard);
-//
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
-//				0, maxDeckSize, instantiator);
-//		domain.game.Card cardDrawn = deck.drawCardFromBottom();
-//		assertEquals(cardDrawn, firstCard);
-//		assertEquals(expectedDeckSize, deck.getDeckSize());
-//
-//		EasyMock.verify(cardStub, rand, instantiator);
-//	}
-//
-//	@Test
-//	public void drawCard62CardsDeckFromBottomReturnsFirstCard() {
-//		final int maxDeckSize = 62;
-//		final int expectedDeckSize = 61;
-//		GameType gameType = GameType.IMPLODING_KITTENS;
-//		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card cardStub = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//
-//		EasyMock.replay(rand, cardStub, instantiator);
-//
-//		List<domain.game.Card> maxSizeDeck = new ArrayList<>
-//				(Collections.nCopies(expectedDeckSize, cardStub));
-//
-//		maxSizeDeck.add(0, firstCard);
-//
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
-//				0, maxDeckSize, instantiator);
-//		domain.game.Card cardDrawn = deck.drawCardFromBottom();
-//		assertEquals(cardDrawn, firstCard);
-//		assertEquals(expectedDeckSize, deck.getDeckSize());
-//
-//		EasyMock.verify(cardStub, rand, instantiator);
-//	}
+
 //
 //	@Test
 //	public void removeBombOneCard() {
@@ -1004,9 +1055,9 @@
 //		final int numOfBombs = 1;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
+//		Card firstCard = EasyMock.createMock(Card.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> maxSizeDeck = EasyMock.createMock(List.class);
+//		List<Card> maxSizeDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(1).times(1);
 //		EasyMock.expect(maxSizeDeck.get(0)).andReturn(firstCard).times(1);
@@ -1014,14 +1065,14 @@
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(0).times(2);
 //
 //		EasyMock.expect(firstCard.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.EXPLODING_KITTEN).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.EXPLODING_KITTEN))
+//		EasyMock.expect(instantiator.createCard(CardType.EXPLODING_KITTEN))
 //				.andReturn(firstCard).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, firstCard, maxSizeDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
+//		Deck deck = new Deck(maxSizeDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
 //		int numberOfBombs = deck.removeBombs();
@@ -1040,11 +1091,11 @@
 //		final int deckSize = 2;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card secondCard = EasyMock.createMock(domain.game.Card.class);
+//		Card firstCard = EasyMock.createMock(Card.class);
+//		Card secondCard = EasyMock.createMock(Card.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		List<domain.game.Card> maxSizeDeck = EasyMock.createMock(List.class);
+//		List<Card> maxSizeDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(deckSize).times(1);
 //		EasyMock.expect(maxSizeDeck.get(0)).andReturn(firstCard).times(1);
@@ -1054,20 +1105,20 @@
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(1).times(2);
 //
 //		EasyMock.expect(firstCard.getCardType())
-//				.andReturn(domain.game.CardType.DEFUSE).anyTimes();
+//				.andReturn(CardType.DEFUSE).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.DEFUSE))
+//		EasyMock.expect(instantiator.createCard(CardType.DEFUSE))
 //				.andReturn(firstCard).anyTimes();
 //
 //		EasyMock.expect(secondCard.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.EXPLODING_KITTEN).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.EXPLODING_KITTEN))
+//		EasyMock.expect(instantiator.createCard(CardType.EXPLODING_KITTEN))
 //				.andReturn(secondCard).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, firstCard, maxSizeDeck, secondCard);
 //
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
+//		Deck deck = new Deck(maxSizeDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //		int numberOfBombs = deck.removeBombs();
 //		assertEquals(numOfBombs, numberOfBombs);
@@ -1085,11 +1136,11 @@
 //		final int numOfBombs = 3;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card secondCard = EasyMock.createMock(domain.game.Card.class);
+//		Card firstCard = EasyMock.createMock(Card.class);
+//		Card secondCard = EasyMock.createMock(Card.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		List<domain.game.Card> maxSizeDeck = EasyMock.createMock(List.class);
+//		List<Card> maxSizeDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(deckSize).times(1);
 //		EasyMock.expect(maxSizeDeck.get(0)).andReturn(firstCard).times(1);
@@ -1108,20 +1159,20 @@
 //
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(1).times(2);
 //
-//		EasyMock.expect(firstCard.getCardType()).andReturn(domain.game.CardType.DEFUSE).anyTimes();
+//		EasyMock.expect(firstCard.getCardType()).andReturn(CardType.DEFUSE).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.DEFUSE))
+//		EasyMock.expect(instantiator.createCard(CardType.DEFUSE))
 //				.andReturn(firstCard).anyTimes();
 //
 //		EasyMock.expect(secondCard.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.EXPLODING_KITTEN).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.EXPLODING_KITTEN))
+//		EasyMock.expect(instantiator.createCard(CardType.EXPLODING_KITTEN))
 //				.andReturn(secondCard).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, firstCard, maxSizeDeck, secondCard);
 //
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
+//		Deck deck = new Deck(maxSizeDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //		int numberOfBombs = deck.removeBombs();
 //		assertEquals(numOfBombs, numberOfBombs);
@@ -1137,11 +1188,11 @@
 //		final int numOfBombs = 1;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card secondCard = EasyMock.createMock(domain.game.Card.class);
+//		Card firstCard = EasyMock.createMock(Card.class);
+//		Card secondCard = EasyMock.createMock(Card.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		List<domain.game.Card> maxSizeDeck = EasyMock.createMock(List.class);
+//		List<Card> maxSizeDeck = EasyMock.createMock(List.class);
 //
 //		for (int index = 0; index < expectedDeckSize; index++) {
 //			EasyMock.expect(maxSizeDeck.size()).andReturn(maxDeckSize).times(1);
@@ -1157,20 +1208,20 @@
 //		EasyMock.expect(maxSizeDeck.size())
 //				.andReturn(expectedDeckSize).times(2);
 //
-//		EasyMock.expect(firstCard.getCardType()).andReturn(domain.game.CardType.DEFUSE).anyTimes();
+//		EasyMock.expect(firstCard.getCardType()).andReturn(CardType.DEFUSE).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.DEFUSE))
+//		EasyMock.expect(instantiator.createCard(CardType.DEFUSE))
 //				.andReturn(firstCard).anyTimes();
 //
 //		EasyMock.expect(secondCard.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.EXPLODING_KITTEN).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.EXPLODING_KITTEN))
+//		EasyMock.expect(instantiator.createCard(CardType.EXPLODING_KITTEN))
 //				.andReturn(secondCard).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, firstCard, maxSizeDeck, secondCard);
 //
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
+//		Deck deck = new Deck(maxSizeDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //		int numberOfBombs = deck.removeBombs();
 //		assertEquals(numOfBombs, numberOfBombs);
@@ -1186,11 +1237,11 @@
 //		final int numOfBombs = 1;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card secondCard = EasyMock.createMock(domain.game.Card.class);
+//		Card firstCard = EasyMock.createMock(Card.class);
+//		Card secondCard = EasyMock.createMock(Card.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		List<domain.game.Card> maxSizeDeck = EasyMock.createMock(List.class);
+//		List<Card> maxSizeDeck = EasyMock.createMock(List.class);
 //
 //		for (int index = 0; index < expectedDeckSize; index++) {
 //			EasyMock.expect(maxSizeDeck.size()).andReturn(maxDeckSize).times(1);
@@ -1204,20 +1255,20 @@
 //
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(expectedDeckSize).times(2);
 //
-//		EasyMock.expect(firstCard.getCardType()).andReturn(domain.game.CardType.DEFUSE).anyTimes();
+//		EasyMock.expect(firstCard.getCardType()).andReturn(CardType.DEFUSE).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.DEFUSE))
+//		EasyMock.expect(instantiator.createCard(CardType.DEFUSE))
 //				.andReturn(firstCard).anyTimes();
 //
 //		EasyMock.expect(secondCard.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.EXPLODING_KITTEN).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.EXPLODING_KITTEN))
+//		EasyMock.expect(instantiator.createCard(CardType.EXPLODING_KITTEN))
 //				.andReturn(secondCard).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, firstCard, maxSizeDeck, secondCard);
 //
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType, 0,
+//		Deck deck = new Deck(maxSizeDeck, rand, gameType, 0,
 //				maxDeckSize, instantiator);
 //		int numberOfBombs = deck.removeBombs();
 //		assertEquals(numOfBombs, numberOfBombs);
@@ -1232,11 +1283,11 @@
 //		final int expectedDeckSize = 61;
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
-//		domain.game.Card firstCard = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card secondCard = EasyMock.createMock(domain.game.Card.class);
+//		Card firstCard = EasyMock.createMock(Card.class);
+//		Card secondCard = EasyMock.createMock(Card.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		List<domain.game.Card> maxSizeDeck = EasyMock.createMock(List.class);
+//		List<Card> maxSizeDeck = EasyMock.createMock(List.class);
 //
 //		for (int index = 0; index < expectedDeckSize; index++) {
 //			EasyMock.expect(maxSizeDeck.size()).andReturn(maxDeckSize).times(1);
@@ -1250,20 +1301,20 @@
 //
 //		EasyMock.expect(maxSizeDeck.size()).andReturn(expectedDeckSize).times(2);
 //
-//		EasyMock.expect(firstCard.getCardType()).andReturn(domain.game.CardType.DEFUSE).anyTimes();
+//		EasyMock.expect(firstCard.getCardType()).andReturn(CardType.DEFUSE).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.DEFUSE))
+//		EasyMock.expect(instantiator.createCard(CardType.DEFUSE))
 //				.andReturn(firstCard).anyTimes();
 //
 //		EasyMock.expect(secondCard.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.EXPLODING_KITTEN).anyTimes();
 //
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.EXPLODING_KITTEN))
+//		EasyMock.expect(instantiator.createCard(CardType.EXPLODING_KITTEN))
 //				.andReturn(secondCard).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, firstCard, maxSizeDeck, secondCard);
 //
-//		domain.game.Deck deck = new domain.game.Deck(maxSizeDeck, rand, gameType,
+//		Deck deck = new Deck(maxSizeDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //		int numberOfBombs = deck.removeBombs();
 //		assertEquals(1, numberOfBombs);
@@ -1278,11 +1329,11 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> oneCardDeck = EasyMock.createMock(List.class);
+//		List<Card> oneCardDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.replay(rand, instantiator, oneCardDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(oneCardDeck, rand, gameType,
+//		Deck deck = new Deck(oneCardDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //		int indexToInsert = -1;
 //
@@ -1309,23 +1360,23 @@
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card3 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card4 = EasyMock.createMock(domain.game.Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
+//		Card card3 = EasyMock.createMock(Card.class);
+//		Card card4 = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(card1.getCardType()).andReturn(domain.game.CardType.CAT_ONE).anyTimes();
-//		EasyMock.expect(card2.getCardType()).andReturn(domain.game.CardType.CAT_TWO).anyTimes();
-//		EasyMock.expect(card3.getCardType()).andReturn(domain.game.CardType.CAT_THREE).anyTimes();
-//		EasyMock.expect(card4.getCardType()).andReturn(domain.game.CardType.SUPER_SKIP).anyTimes();
+//		EasyMock.expect(card1.getCardType()).andReturn(CardType.CAT_ONE).anyTimes();
+//		EasyMock.expect(card2.getCardType()).andReturn(CardType.CAT_TWO).anyTimes();
+//		EasyMock.expect(card3.getCardType()).andReturn(CardType.CAT_THREE).anyTimes();
+//		EasyMock.expect(card4.getCardType()).andReturn(CardType.SUPER_SKIP).anyTimes();
 //
-//		domain.game.Card explodingKittenCard = EasyMock.createMock(domain.game.Card.class);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.EXPLODING_KITTEN))
+//		Card explodingKittenCard = EasyMock.createMock(Card.class);
+//		EasyMock.expect(instantiator.createCard(CardType.EXPLODING_KITTEN))
 //				.andReturn(explodingKittenCard).once();
 //		EasyMock.expect(explodingKittenCard.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).once();
+//				.andReturn(CardType.EXPLODING_KITTEN).once();
 //
-//		List<domain.game.Card> fourCardsDeck = EasyMock.createMock(List.class);
+//		List<Card> fourCardsDeck = EasyMock.createMock(List.class);
 //		EasyMock.expect(fourCardsDeck.size())
 //				.andReturn(deckSizeNoExplodingKitten).once();
 //
@@ -1343,14 +1394,14 @@
 //		EasyMock.replay(rand, instantiator, card1, card2, card3, card4,
 //				explodingKittenCard, fourCardsDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(fourCardsDeck, rand, gameType,
+//		Deck deck = new Deck(fourCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
 //		int indexToInsert = 0;
 //
 //		deck.insertExplodingKittenAtIndex(indexToInsert);
 //
-//		assertEquals(domain.game.CardType.EXPLODING_KITTEN, deck.getCardTypeAtIndex(0));
+//		assertEquals(CardType.EXPLODING_KITTEN, deck.getCardTypeAtIndex(0));
 //		assertEquals(deckSize, deck.getDeckSize());
 //
 //
@@ -1372,23 +1423,23 @@
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card3 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card4 = EasyMock.createMock(domain.game.Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
+//		Card card3 = EasyMock.createMock(Card.class);
+//		Card card4 = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(card1.getCardType()).andReturn(domain.game.CardType.CAT_ONE).anyTimes();
-//		EasyMock.expect(card2.getCardType()).andReturn(domain.game.CardType.CAT_TWO).anyTimes();
-//		EasyMock.expect(card3.getCardType()).andReturn(domain.game.CardType.CAT_THREE).anyTimes();
-//		EasyMock.expect(card4.getCardType()).andReturn(domain.game.CardType.SUPER_SKIP).anyTimes();
+//		EasyMock.expect(card1.getCardType()).andReturn(CardType.CAT_ONE).anyTimes();
+//		EasyMock.expect(card2.getCardType()).andReturn(CardType.CAT_TWO).anyTimes();
+//		EasyMock.expect(card3.getCardType()).andReturn(CardType.CAT_THREE).anyTimes();
+//		EasyMock.expect(card4.getCardType()).andReturn(CardType.SUPER_SKIP).anyTimes();
 //
-//		domain.game.Card explodingKittenCard = EasyMock.createMock(domain.game.Card.class);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.EXPLODING_KITTEN))
+//		Card explodingKittenCard = EasyMock.createMock(Card.class);
+//		EasyMock.expect(instantiator.createCard(CardType.EXPLODING_KITTEN))
 //				.andReturn(explodingKittenCard).once();
 //		EasyMock.expect(explodingKittenCard.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).once();
+//				.andReturn(CardType.EXPLODING_KITTEN).once();
 //
-//		List<domain.game.Card> fourCardsDeck = EasyMock.createMock(List.class);
+//		List<Card> fourCardsDeck = EasyMock.createMock(List.class);
 //		EasyMock.expect(fourCardsDeck.size())
 //				.andReturn(deckSizeNoExplodingKitten).once();
 //
@@ -1407,13 +1458,13 @@
 //		EasyMock.replay(rand, instantiator, card1, card2, card3, card4,
 //				explodingKittenCard, fourCardsDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(fourCardsDeck, rand, gameType,
+//		Deck deck = new Deck(fourCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //		int indexToInsert = 1;
 //
 //		deck.insertExplodingKittenAtIndex(indexToInsert);
 //
-//		assertEquals(domain.game.CardType.EXPLODING_KITTEN, deck.getCardTypeAtIndex(1));
+//		assertEquals(CardType.EXPLODING_KITTEN, deck.getCardTypeAtIndex(1));
 //		assertEquals(deckSize, deck.getDeckSize());
 //
 //		EasyMock.verify(rand, instantiator, card1, card2, card3, card4,
@@ -1434,23 +1485,23 @@
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card3 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card4 = EasyMock.createMock(domain.game.Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
+//		Card card3 = EasyMock.createMock(Card.class);
+//		Card card4 = EasyMock.createMock(Card.class);
 //
-//		EasyMock.expect(card1.getCardType()).andReturn(domain.game.CardType.CAT_ONE).anyTimes();
-//		EasyMock.expect(card2.getCardType()).andReturn(domain.game.CardType.CAT_TWO).anyTimes();
-//		EasyMock.expect(card3.getCardType()).andReturn(domain.game.CardType.CAT_THREE).anyTimes();
-//		EasyMock.expect(card4.getCardType()).andReturn(domain.game.CardType.SUPER_SKIP).anyTimes();
+//		EasyMock.expect(card1.getCardType()).andReturn(CardType.CAT_ONE).anyTimes();
+//		EasyMock.expect(card2.getCardType()).andReturn(CardType.CAT_TWO).anyTimes();
+//		EasyMock.expect(card3.getCardType()).andReturn(CardType.CAT_THREE).anyTimes();
+//		EasyMock.expect(card4.getCardType()).andReturn(CardType.SUPER_SKIP).anyTimes();
 //
-//		domain.game.Card explodingKittenCard = EasyMock.createMock(domain.game.Card.class);
-//		EasyMock.expect(instantiator.createCard(domain.game.CardType.EXPLODING_KITTEN))
+//		Card explodingKittenCard = EasyMock.createMock(Card.class);
+//		EasyMock.expect(instantiator.createCard(CardType.EXPLODING_KITTEN))
 //				.andReturn(explodingKittenCard).once();
 //		EasyMock.expect(explodingKittenCard.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).once();
+//				.andReturn(CardType.EXPLODING_KITTEN).once();
 //
-//		List<domain.game.Card> fourCardsDeck = EasyMock.createMock(List.class);
+//		List<Card> fourCardsDeck = EasyMock.createMock(List.class);
 //		EasyMock.expect(fourCardsDeck.size())
 //				.andReturn(deckSizeNoExplodingKitten).once();
 //
@@ -1469,14 +1520,14 @@
 //		EasyMock.replay(rand, instantiator, card1, card2, card3, card4,
 //				explodingKittenCard, fourCardsDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(fourCardsDeck, rand, gameType,
+//		Deck deck = new Deck(fourCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //		final int indexToInsert = 4;
 //		final int indexInserted = 4;
 //
 //		deck.insertExplodingKittenAtIndex(indexToInsert);
 //
-//		assertEquals(domain.game.CardType.EXPLODING_KITTEN, deck.getCardTypeAtIndex(indexInserted));
+//		assertEquals(CardType.EXPLODING_KITTEN, deck.getCardTypeAtIndex(indexInserted));
 //		assertEquals(deckSize, deck.getDeckSize());
 //
 //		EasyMock.verify(rand, instantiator, card1, card2, card3, card4,
@@ -1490,13 +1541,13 @@
 //		GameType gameType = GameType.EXPLODING_KITTENS;
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		List<domain.game.Card> cardsDeck = EasyMock.createMock(List.class);
+//		List<Card> cardsDeck = EasyMock.createMock(List.class);
 //
 //		EasyMock.expect(cardsDeck.size()).andReturn(deckSizeNoExplodingKitten).once();
 //
 //		EasyMock.replay(rand, instantiator, cardsDeck);
 //
-//		domain.game.Deck deck = new domain.game.Deck(cardsDeck, rand, gameType,
+//		Deck deck = new Deck(cardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //		final int indexToInsert = 5;
 //
@@ -1516,20 +1567,20 @@
 //		final int cardOneIndex = 1;
 //		final int cardTwoIndex = 2;
 //		final int deckSizeNoExplodingKitten = 3;
-//		List<domain.game.Card> threeCardsDeck = EasyMock.createMock(List.class);
+//		List<Card> threeCardsDeck = EasyMock.createMock(List.class);
 //		GameType gameType = GameType.EXPLODING_KITTENS;
-//		domain.game.Card card0 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
+//		Card card0 = EasyMock.createMock(Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Deck deck = new domain.game.Deck(threeCardsDeck, rand, gameType,
+//		Deck deck = new Deck(threeCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
-//		EasyMock.expect(card0.getCardType()).andReturn(domain.game.CardType.SKIP).anyTimes();
-//		EasyMock.expect(card1.getCardType()).andReturn(domain.game.CardType.ATTACK).anyTimes();
+//		EasyMock.expect(card0.getCardType()).andReturn(CardType.SKIP).anyTimes();
+//		EasyMock.expect(card1.getCardType()).andReturn(CardType.ATTACK).anyTimes();
 //		EasyMock.expect(card2.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN)
+//				.andReturn(CardType.EXPLODING_KITTEN)
 //				.anyTimes();
 //
 //		EasyMock.expect(threeCardsDeck.size())
@@ -1567,20 +1618,20 @@
 //	public void reorderThreeCardsDeckWithFourNewOrderIndices() {
 //		final int maxDeckSize = 42;
 //		final int deckSizeNoExplodingKitten = 3;
-//		List<domain.game.Card> threeCardsDeck = EasyMock.createMock(List.class);
+//		List<Card> threeCardsDeck = EasyMock.createMock(List.class);
 //		GameType gameType = GameType.EXPLODING_KITTENS;
-//		domain.game.Card card0 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
+//		Card card0 = EasyMock.createMock(Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Deck deck = new domain.game.Deck(threeCardsDeck, rand, gameType,
+//		Deck deck = new Deck(threeCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
-//		EasyMock.expect(card0.getCardType()).andReturn(domain.game.CardType.SKIP).anyTimes();
-//		EasyMock.expect(card1.getCardType()).andReturn(domain.game.CardType.ATTACK).anyTimes();
+//		EasyMock.expect(card0.getCardType()).andReturn(CardType.SKIP).anyTimes();
+//		EasyMock.expect(card1.getCardType()).andReturn(CardType.ATTACK).anyTimes();
 //		EasyMock.expect(card2.getCardType()).
-//				andReturn(domain.game.CardType.EXPLODING_KITTEN).anyTimes();
+//				andReturn(CardType.EXPLODING_KITTEN).anyTimes();
 //
 //		EasyMock.expect(threeCardsDeck.size())
 //				.andReturn(deckSizeNoExplodingKitten).anyTimes();
@@ -1610,20 +1661,20 @@
 //	public void reorderThreeCardsDeckWithInvalidOrderIndices() {
 //		final int maxDeckSize = 42;
 //		final int deckSizeNoExplodingKitten = 3;
-//		List<domain.game.Card> threeCardsDeck = EasyMock.createMock(List.class);
+//		List<Card> threeCardsDeck = EasyMock.createMock(List.class);
 //		GameType gameType = GameType.EXPLODING_KITTENS;
-//		domain.game.Card card0 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
+//		Card card0 = EasyMock.createMock(Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Deck deck = new domain.game.Deck(threeCardsDeck, rand, gameType, 0,
+//		Deck deck = new Deck(threeCardsDeck, rand, gameType, 0,
 //				maxDeckSize, instantiator);
 //
-//		EasyMock.expect(card0.getCardType()).andReturn(domain.game.CardType.SKIP).anyTimes();
-//		EasyMock.expect(card1.getCardType()).andReturn(domain.game.CardType.ATTACK).anyTimes();
+//		EasyMock.expect(card0.getCardType()).andReturn(CardType.SKIP).anyTimes();
+//		EasyMock.expect(card1.getCardType()).andReturn(CardType.ATTACK).anyTimes();
 //		EasyMock.expect(card2.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.EXPLODING_KITTEN).anyTimes();
 //
 //		EasyMock.expect(threeCardsDeck.size())
 //				.andReturn(deckSizeNoExplodingKitten).anyTimes();
@@ -1652,20 +1703,20 @@
 //	public void reorderThreeCardsDeckWithThreeIndicesGreaterDeckSize() {
 //		final int maxDeckSize = 42;
 //		final int deckSizeNoExplodingKitten = 3;
-//		List<domain.game.Card> threeCardsDeck = EasyMock.createMock(List.class);
+//		List<Card> threeCardsDeck = EasyMock.createMock(List.class);
 //		GameType gameType = GameType.EXPLODING_KITTENS;
-//		domain.game.Card card0 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
+//		Card card0 = EasyMock.createMock(Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
-//		domain.game.Deck deck = new domain.game.Deck(threeCardsDeck, rand, gameType,
+//		Deck deck = new Deck(threeCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
-//		EasyMock.expect(card0.getCardType()).andReturn(domain.game.CardType.SKIP).anyTimes();
-//		EasyMock.expect(card1.getCardType()).andReturn(domain.game.CardType.ATTACK).anyTimes();
+//		EasyMock.expect(card0.getCardType()).andReturn(CardType.SKIP).anyTimes();
+//		EasyMock.expect(card1.getCardType()).andReturn(CardType.ATTACK).anyTimes();
 //		EasyMock.expect(card2.getCardType())
-//				.andReturn(domain.game.CardType.EXPLODING_KITTEN)
+//				.andReturn(CardType.EXPLODING_KITTEN)
 //				.anyTimes();
 //
 //		EasyMock.expect(threeCardsDeck.size())
@@ -1695,28 +1746,28 @@
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card3 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card4 = EasyMock.createMock(domain.game.Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
+//		Card card3 = EasyMock.createMock(Card.class);
+//		Card card4 = EasyMock.createMock(Card.class);
 //
-//		List<domain.game.Card> fourCardsDeck = new ArrayList<>
+//		List<Card> fourCardsDeck = new ArrayList<>
 //				(Arrays.asList(card1, card2, card3, card4));
 //
-//		domain.game.Card implodingKittenCard = EasyMock.createMock(domain.game.Card.class);
+//		Card implodingKittenCard = EasyMock.createMock(Card.class);
 //		EasyMock.expect(implodingKittenCard.getCardType())
-//				.andReturn(domain.game.CardType.IMPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.IMPLODING_KITTEN).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, card1, card2,
 //				card3, card4, implodingKittenCard);
 //
-//		domain.game.Deck deck = new domain.game.Deck(fourCardsDeck, rand, gameType,
+//		Deck deck = new Deck(fourCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
 //		int indexToInsert = 0;
 //		deck.insertImplodingKittenAtIndex(indexToInsert, implodingKittenCard);
 //
-//		assertEquals(domain.game.CardType.IMPLODING_KITTEN, deck.getCardTypeAtIndex(0));
+//		assertEquals(CardType.IMPLODING_KITTEN, deck.getCardTypeAtIndex(0));
 //		assertEquals(deckSizeWithImplodingKitten, deck.getDeckSize());
 //
 //		EasyMock.verify(rand, instantiator, card1,
@@ -1731,27 +1782,27 @@
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card3 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card4 = EasyMock.createMock(domain.game.Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
+//		Card card3 = EasyMock.createMock(Card.class);
+//		Card card4 = EasyMock.createMock(Card.class);
 //
-//		List<domain.game.Card> fourCardsDeck = new ArrayList<>(
+//		List<Card> fourCardsDeck = new ArrayList<>(
 //				Arrays.asList(card1, card2, card3, card4));
 //
-//		domain.game.Card implodingKittenCard = EasyMock.createMock(domain.game.Card.class);
+//		Card implodingKittenCard = EasyMock.createMock(Card.class);
 //		EasyMock.expect(implodingKittenCard.getCardType())
-//				.andReturn(domain.game.CardType.IMPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.IMPLODING_KITTEN).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, card1, card2,
 //				card3, card4, implodingKittenCard);
 //
-//		domain.game.Deck deck = new domain.game.Deck(fourCardsDeck, rand, gameType, 0, maxDeckSize, instantiator);
+//		Deck deck = new Deck(fourCardsDeck, rand, gameType, 0, maxDeckSize, instantiator);
 //
 //		final int indexToInsert = 1;
 //		deck.insertImplodingKittenAtIndex(indexToInsert, implodingKittenCard);
 //
-//		assertEquals(domain.game.CardType.IMPLODING_KITTEN, deck.getCardTypeAtIndex(1));
+//		assertEquals(CardType.IMPLODING_KITTEN, deck.getCardTypeAtIndex(1));
 //		assertEquals(deckSizeWithImplodingKitten, deck.getDeckSize());
 //
 //		EasyMock.verify(rand, instantiator, card1, card2,
@@ -1767,28 +1818,28 @@
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card2 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card3 = EasyMock.createMock(domain.game.Card.class);
-//		domain.game.Card card4 = EasyMock.createMock(domain.game.Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
+//		Card card2 = EasyMock.createMock(Card.class);
+//		Card card3 = EasyMock.createMock(Card.class);
+//		Card card4 = EasyMock.createMock(Card.class);
 //
-//		List<domain.game.Card> fourCardsDeck = new ArrayList<>(
+//		List<Card> fourCardsDeck = new ArrayList<>(
 //				Arrays.asList(card1, card2, card3, card4));
 //
-//		domain.game.Card implodingKittenCard = EasyMock.createMock(domain.game.Card.class);
+//		Card implodingKittenCard = EasyMock.createMock(Card.class);
 //		EasyMock.expect(implodingKittenCard.getCardType())
-//				.andReturn(domain.game.CardType.IMPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.IMPLODING_KITTEN).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, card1, card2,
 //				card3, card4, implodingKittenCard);
 //
-//		domain.game.Deck deck = new domain.game.Deck(fourCardsDeck, rand, gameType,
+//		Deck deck = new Deck(fourCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
 //		int indexToInsert = fourCardsDeck.size();
 //		deck.insertImplodingKittenAtIndex(indexToInsert, implodingKittenCard);
 //
-//		assertEquals(domain.game.CardType.IMPLODING_KITTEN,
+//		assertEquals(CardType.IMPLODING_KITTEN,
 //				deck.getCardTypeAtIndex(ImplodingKittenInsertIndex));
 //		assertEquals(deckSizeWithImplodingKitten, deck.getDeckSize());
 //
@@ -1804,18 +1855,18 @@
 //		Random rand = EasyMock.createMock(Random.class);
 //		Instantiator instantiator = EasyMock.createMock(Instantiator.class);
 //
-//		domain.game.Card card1 = EasyMock.createMock(domain.game.Card.class);
+//		Card card1 = EasyMock.createMock(Card.class);
 //
-//		List<domain.game.Card> fourCardsDeck = new ArrayList<>
+//		List<Card> fourCardsDeck = new ArrayList<>
 //				(Arrays.asList(card1));
 //
-//		domain.game.Card implodingKittenCard = EasyMock.createMock(Card.class);
+//		Card implodingKittenCard = EasyMock.createMock(Card.class);
 //		EasyMock.expect(implodingKittenCard.getCardType())
-//				.andReturn(domain.game.CardType.IMPLODING_KITTEN).anyTimes();
+//				.andReturn(CardType.IMPLODING_KITTEN).anyTimes();
 //
 //		EasyMock.replay(rand, instantiator, card1, implodingKittenCard);
 //
-//		domain.game.Deck deck = new Deck(fourCardsDeck, rand, gameType,
+//		Deck deck = new Deck(fourCardsDeck, rand, gameType,
 //				0, maxDeckSize, instantiator);
 //
 //		final int indexToInsert = 0;
@@ -1830,4 +1881,4 @@
 //
 //
 //
-//}
+}
