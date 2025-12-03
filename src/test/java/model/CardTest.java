@@ -10,7 +10,6 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CardTest {
-
 	@ParameterizedTest
 	@EnumSource(names = {"NOPE", "DEFUSE", "SHUFFLE",
 			"EXPLODING_KITTEN", "SWAP_TOP_AND_BOTTOM"
