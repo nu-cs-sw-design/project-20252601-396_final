@@ -53,6 +53,14 @@ public class Game implements GameContext {
             p.addCard(CardFactory.createCard(CardType.DEFUSE));
         }
 
+        // Add 4 NopeCard
+        final int cardAddedFourTimes = 4;
+        for (int i = 0; i < cardAddedFourTimes; i++) {
+            deck.insertAt(0, CardFactory.createCard(CardType.NOPE));
+            deck.insertAt(0, CardFactory.createCard(CardType.SHUFFLE));
+            deck.insertAt(0, CardFactory.createCard(CardType.SWAP_TOP_AND_BOTTOM));
+        }
+
         // Shuffle Deck
         deck.shuffle();
 
