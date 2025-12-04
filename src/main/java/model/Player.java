@@ -1,5 +1,6 @@
 package model;
 
+import model.exceptions.InvalidMoveException;
 import model.exceptions.NotEnoughCardsException;
 
 import java.util.ArrayList;
@@ -7,10 +8,10 @@ import java.util.List;
 
 public class Player {
     private final int id;
-    private List<Card> hand;
+    private ArrayList<Card> hand;
     private boolean isDead;
 
-    public Player(int id, List<Card> hand) {
+    public Player(int id, ArrayList<Card> hand) {
         this.id = id;
         this.hand = (hand != null) ? hand : new ArrayList<>();
         this.isDead = false;
@@ -25,6 +26,9 @@ public class Player {
         return false;
     }
     public void removeDefuse(){
+        if (hand.size() == 0) {
+            throw new NotEnoughCardsException(hand.size());
+        }
         for (int i = 0; i < hand.size(); i++) {
             if (hand.get(i).getType() == CardType.DEFUSE) {
                 hand.remove(i);
@@ -34,7 +38,7 @@ public class Player {
     }
     public Card removeCard(int index){
         if (index < 0 || index >= getHandSize()) {
-            throw new NotEnoughCardsException(getHandSize());
+            throw new InvalidMoveException("Index out of bounds.");
         }
         Card card = hand.get(index);
         hand.remove(index);
@@ -42,7 +46,7 @@ public class Player {
     }
     public Card getCard(int index){
         if (index < 0 || index >= getHandSize()) {
-            throw new NotEnoughCardsException(getHandSize());
+            throw new InvalidMoveException("Index out of bounds.");
         }
         Card card = hand.get(index);
         return card;
