@@ -67,7 +67,7 @@ package model {
         +start(): void
         +drawCard(playerIdx: int): void
         +playCard(playerIdx: int, cardIdx: int): void
-        +handleNopeInput(playerIdx: int, wantsToNope: boolean): void
+        +handleNopeInput(wantsToNope: boolean): void
         +handleExplosionInsert(index: int): void
 
         -nextTurn(): void

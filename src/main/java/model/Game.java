@@ -88,23 +88,31 @@ public class Game implements GameContext {
         }
     }
 
-    public void drawCard(){
-        int playerIdx = getCurrentPlayer().getId();
-        Player currentPlayer = getCurrentPlayer();
+    private void nextTurn() {
+        int start = currentTurn;
 
-        if (phase != GamePhase.NORMAL) {
-            throw new InvalidMoveException("Cannot draw cards right now.");
+        do {
+            currentTurn = (currentTurn + 1) % players.size();
+        } while (players.get(currentTurn).getDead() && currentTurn != start);
+
+        notifyObservers("It is now Player " + currentTurn + "'s turn.");
+        for (GameObserver obs : observers) {
+            obs.onTurnChanged(currentTurn);
         }
+    }
 
-        Card drawnCard = deck.draw();
-        notifyObservers("Player " + playerIdx + " drew " + drawnCard.getType());
+    private void checkGameOver() {
+        long aliveCount = players.stream().filter(p -> !p.getDead()).count();
+        if (aliveCount <= 1) {
+            phase = GamePhase.GAME_OVER;
 
-        if (drawnCard.getType() == CardType.EXPLODING_KITTEN) {
-            phase = GamePhase.EXPLOSION_PHASE;
-            handleExplosionLogic(currentPlayer);
-        } else {
-            currentPlayer.addCard(drawnCard);
-            nextTurn();
+            Player winner = players.stream()
+                    .filter(p -> !p.getDead())
+                    .findFirst()
+                    .orElse(null);
+
+            String winnerId = (winner != null) ? String.valueOf(winner.getId()) : "Unknown";
+            notifyObservers("GAME OVER! We have a winner: Player " + winnerId);
         }
     }
 
@@ -133,31 +141,23 @@ public class Game implements GameContext {
         }
     }
 
-    private void checkGameOver() {
-        long aliveCount = players.stream().filter(p -> !p.getDead()).count();
-        if (aliveCount <= 1) {
-            phase = GamePhase.GAME_OVER;
+    public void drawCard(){
+        int playerIdx = getCurrentPlayer().getId();
+        Player currentPlayer = getCurrentPlayer();
 
-            Player winner = players.stream()
-                    .filter(p -> !p.getDead())
-                    .findFirst()
-                    .orElse(null);
-
-            String winnerId = (winner != null) ? String.valueOf(winner.getId()) : "Unknown";
-            notifyObservers("GAME OVER! We have a winner: Player " + winnerId);
+        if (phase != GamePhase.NORMAL) {
+            throw new InvalidMoveException("Cannot draw cards right now.");
         }
-    }
 
-    private void nextTurn() {
-        int start = currentTurn;
+        Card drawnCard = deck.draw();
+        notifyObservers("Player " + playerIdx + " drew " + drawnCard.getType());
 
-        do {
-            currentTurn = (currentTurn + 1) % players.size();
-        } while (players.get(currentTurn).getDead() && currentTurn != start);
-
-        notifyObservers("It is now Player " + currentTurn + "'s turn.");
-        for (GameObserver obs : observers) {
-            obs.onTurnChanged(currentTurn);
+        if (drawnCard.getType() == CardType.EXPLODING_KITTEN) {
+            phase = GamePhase.EXPLOSION_PHASE;
+            handleExplosionLogic(currentPlayer);
+        } else {
+            currentPlayer.addCard(drawnCard);
+            nextTurn();
         }
     }
 
@@ -208,12 +208,6 @@ public class Game implements GameContext {
         }
     }
 
-    public void handleNopeInput(int playerIdx, boolean wantsToNope){
-        if (!wantsToNope) {
-            resolvePendingAction();
-        }
-    }
-
     private void resolvePendingAction() {
         if (pendingAction == null) return;
 
@@ -222,6 +216,12 @@ public class Game implements GameContext {
         // Reset
         pendingAction = null;
         phase = GamePhase.NORMAL;
+    }
+
+    public void handleNopeInput(boolean wantsToNope){
+        if (!wantsToNope) {
+            resolvePendingAction();
+        }
     }
 
     public void handleExplosionInsert(int index){
@@ -236,5 +236,14 @@ public class Game implements GameContext {
         // Resume Game
         phase = GamePhase.NORMAL;
         nextTurn();
+    }
+
+    // strictly used only for test
+    public void setPhase(GamePhase phase){
+        this.phase = phase;
+    }
+    // strictly used only for test
+    public void setPendingAction(PendingAction pendingAction){
+        this.pendingAction = pendingAction;
     }
 }
