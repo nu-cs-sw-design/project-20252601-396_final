@@ -1,4 +1,6 @@
 package view;
+import model.Game;
+import model.Player;
 import model.GameObserver;
 import model.Card;
 import model.CardType;
@@ -53,5 +55,23 @@ public class GameUI implements GameObserver {
     @Override
     public void onException(GameException e) {
         System.out.println("[ERROR]: " + e.getMessage());
+    }
+
+    public void promptPlayerCount() {
+        System.out.println(">> How many players do you want? (2-5):");
+        System.out.print("> ");
+    }
+
+    public void displayHand(Player player) {
+        System.out.println("[Your Hand]: ");
+        for (int i = 0; i < player.getHandSize(); i++) {
+            System.out.println("   [" + i + "] " + player.getCard(i));
+        }
+        System.out.print("> ");
+    }
+
+    public void displayState(Game game) {
+        System.out.println("Current Phase: " + game.getPhase());
+        System.out.println("Deck Size: " + game.getDeck().getDeckSize());
     }
 }
