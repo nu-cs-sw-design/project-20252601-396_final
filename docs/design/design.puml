@@ -17,6 +17,7 @@ package model {
     interface GameContext {
         +getDeck(): Deck
         +getCurrentPlayer(): Player
+        +getPlayers(): List<Player>
         +getPhase(): GamePhase
         +getPendingAction(): PendingAction
         +registerObservers(observer: GameObserver): void
@@ -60,6 +61,7 @@ package model {
 
         +getDeck(): Deck
         +getCurrentPlayer(): Player
+        +getPlayers(): List<Player>
         +getPhase(): GamePhase
         +getPendingAction(): PendingAction
         +notifyObservers(msg: String): void
@@ -81,6 +83,7 @@ package model {
         -hand: List<Card>
         -isDead: boolean
         +hasCard(cardType: CardType): boolean
+        +getNopeIndex(): int
         +removeDefuse(): void
         +removeCard(index: int): Card
         +addCard(card: Card): void
@@ -148,11 +151,7 @@ package model {
 
 package view {
     class GameUI implements model.GameObserver {
-        -controller: controller.GameController
-
-        +displayState(game: Game): void
-        +promptPlayerCount(): void
-        +displayHand(player: Player): void
+        -{final} scanner: Scanner
 
         +onGameMessage(msg: String): void
         +onTurnChanged(pid: int): void
@@ -164,6 +163,12 @@ package view {
         +onPlayerEliminated(pid: int): void
         +onActionCancelled(msg: String): void
         +onException(e: GameException): void
+
+        +displayHand(player: Player): void
+        +promptPlayerCount(): int
+        +promptCommand(): String
+        +promptInsertionIndex(): int
+        +promptPlayNope(playerId: int): boolean
     }
 }
 
@@ -189,7 +194,6 @@ GameController --> view.GameUI
 Main ..> GameController
 
 view.GameUI ..|> model.GameObserver
-view.GameUI --> model.Game
 
 model.Game --> "1" model.Deck
 model.Game --> "*" model.Player
