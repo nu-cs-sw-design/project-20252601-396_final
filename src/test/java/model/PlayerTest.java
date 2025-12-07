@@ -58,6 +58,55 @@ class PlayerTest {
 		assertFalse(player.hasCard(CardType.DEFUSE));
 		EasyMock.verify(action, card);
 	}
+
+	@Test
+	public void testGetNopeIndexFindsFirstOccurrence() {
+		Card c0 = EasyMock.createMock(Card.class);
+		Card c1 = EasyMock.createMock(Card.class);
+		Card c2 = EasyMock.createMock(Card.class);
+
+		EasyMock.expect(c0.getType()).andStubReturn(CardType.SHUFFLE);
+		EasyMock.expect(c1.getType()).andStubReturn(CardType.NOPE);
+		EasyMock.replay(c0, c1, c2);
+
+		ArrayList<Card> hand = new ArrayList<>(Arrays.asList(c0, c1, c2));
+		Player player = new Player(0, hand);
+
+		int index = player.getNopeIndex();
+		assertEquals(1, index);
+
+		EasyMock.verify(c0, c1, c2);
+	}
+
+	@Test
+	public void testGetNopeIndexReturnsNegativeOneWhenMissing() {
+		Card c0 = EasyMock.createMock(Card.class);
+		Card c1 = EasyMock.createMock(Card.class);
+
+		EasyMock.expect(c0.getType()).andStubReturn(CardType.DEFUSE);
+		EasyMock.expect(c1.getType()).andStubReturn(CardType.SHUFFLE);
+		EasyMock.replay(c0, c1);
+
+		ArrayList<Card> hand = new ArrayList<>(Arrays.asList(c0, c1));
+		Player player = new Player(0, hand);
+
+		int index = player.getNopeIndex();
+
+		assertEquals(-1, index);
+
+		EasyMock.verify(c0, c1);
+	}
+
+	@Test
+	public void testGetNopeIndexForEmptyHand() {
+		ArrayList<Card> hand = new ArrayList<>();
+		Player player = new Player(0, hand);
+
+		int index = player.getNopeIndex();
+
+		assertEquals(-1, index);
+	}
+
 	@Test
 	public void testRemoveDefuseSuccess() {
 		Card nopeCard = EasyMock.createMock(Card.class);

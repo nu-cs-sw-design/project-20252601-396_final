@@ -25,6 +25,16 @@ public class Player {
         }
         return false;
     }
+
+    public int getNopeIndex() {
+        for (int i = 0; i < hand.size(); i++) {
+            if (hand.get(i).getType() == CardType.NOPE) {
+                return i;
+            }
+        }
+        return -1; // Not found
+    }
+
     public void removeDefuse(){
         if (hand.size() == 0) {
             throw new NotEnoughCardsException(hand.size());
