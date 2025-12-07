@@ -29,6 +29,10 @@ public class Game implements GameContext {
         return players.get(currentTurn);
     }
     @Override
+    public List<Player> getPlayers() {
+        return players;
+    }
+    @Override
     public GamePhase getPhase(){
         return phase;
     }

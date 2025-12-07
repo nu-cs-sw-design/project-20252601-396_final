@@ -1,12 +1,20 @@
 package view;
-import model.Game;
-import model.Player;
-import model.GameObserver;
+
 import model.Card;
 import model.CardType;
+import model.GameObserver;
+import model.Player;
 import model.exceptions.GameException;
 
+import java.util.Scanner;
+
 public class GameUI implements GameObserver {
+    private final Scanner scanner;
+
+    public GameUI() {
+        this.scanner = new Scanner(System.in);
+    }
+
     @Override
     public void onGameMessage(String message) {
         System.out.println("[GAME]: " + message);
@@ -14,7 +22,7 @@ public class GameUI implements GameObserver {
 
     @Override
     public void onTurnChanged(int playerIdx) {
-        System.out.println("[TURN]: Now Player " + playerIdx + "'s turn.");
+        System.out.println("\n[TURN]: Now Player " + playerIdx + "'s turn.");
     }
 
     @Override
@@ -24,7 +32,7 @@ public class GameUI implements GameObserver {
 
     @Override
     public void onRequestNope(int actionPlayerIdx, CardType cardType) {
-        System.out.println("[NOPE-CHECK]: Player " + actionPlayerIdx + " played " + cardType + ". Does anyone want to NOPE?");
+        System.out.println("[NOPE-CHECK]: Player " + actionPlayerIdx + " played " + cardType + ". Checking for Nopes...");
     }
 
     @Override
@@ -34,7 +42,7 @@ public class GameUI implements GameObserver {
 
     @Override
     public void onRequestExplosionInsertIndex() {
-        System.out.println("[INPUT]: Where do you want to insert the Kitten? (Enter Index)");
+        System.out.println("[INPUT]: You must insert the Kitten back into the deck.");
     }
 
     @Override
@@ -57,21 +65,48 @@ public class GameUI implements GameObserver {
         System.out.println("[ERROR]: " + e.getMessage());
     }
 
-    public void promptPlayerCount() {
-        System.out.println(">> How many players do you want? (2-5):");
-        System.out.print("> ");
-    }
-
     public void displayHand(Player player) {
         System.out.println("[Your Hand]: ");
         for (int i = 0; i < player.getHandSize(); i++) {
             System.out.println("   [" + i + "] " + player.getCard(i));
         }
-        System.out.print("> ");
     }
 
-    public void displayState(Game game) {
-        System.out.println("Current Phase: " + game.getPhase());
-        System.out.println("Deck Size: " + game.getDeck().getDeckSize());
+    public int promptPlayerCount() {
+        System.out.println(">> How many players do you want? (2-5):");
+        System.out.print("> ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number.");
+            scanner.next();
+            System.out.print("> ");
+        }
+        int count = scanner.nextInt();
+        scanner.nextLine();
+        return count;
+    }
+
+    public String promptCommand() {
+        System.out.println("Options: [D]raw, [P <index>] Play Card");
+        System.out.print("> ");
+        return scanner.nextLine().trim().toUpperCase();
+    }
+
+    public int promptInsertionIndex() {
+        System.out.println(">> Enter index to insert Kitten (0 = Top):");
+        System.out.print("> ");
+        try {
+            String input = scanner.nextLine();
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    public boolean promptPlayNope(int playerId) {
+        System.out.println(">> Player " + playerId + ", you have a NOPE card.");
+        System.out.println("   Do you want to use it to CANCEL the action? [Y]es / [N]o");
+        System.out.print("> ");
+        String input = scanner.nextLine().trim().toUpperCase();
+        return input.equals("Y");
     }
 }
