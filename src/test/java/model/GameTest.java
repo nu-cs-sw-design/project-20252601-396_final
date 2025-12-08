@@ -86,9 +86,9 @@ public class GameTest {
         p1.addCard(EasyMock.anyObject(Card.class));
         p2.addCard(EasyMock.anyObject(Card.class));
 
-        // add 4 Nopes, 4 Shuffles, 4 Swaps
+        // add 6 Nopes, 6 Shuffles, 6 Swaps
         deck.insertAt(EasyMock.eq(0), EasyMock.anyObject(Card.class));
-        EasyMock.expectLastCall().times(12);
+        EasyMock.expectLastCall().times(18);
 
         // first Shuffle
         deck.shuffle();
@@ -96,7 +96,7 @@ public class GameTest {
 
         // deal 4 cards each
         // stub deck size to be > 0
-        EasyMock.expect(deck.getDeckSize()).andStubReturn(50);
+        EasyMock.expect(deck.getDeckSize()).andStubReturn(18);
 
         // mock drawCard
         Card dummyCard = EasyMock.createMock(Card.class);
