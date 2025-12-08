@@ -167,7 +167,7 @@ package view {
         +displayHand(player: Player): void
         +promptPlayerCount(): int
         +promptCommand(): String
-        +promptInsertionIndex(): int
+        +promptInsertionIndex(deckSize: int): int
         +promptPlayNope(playerId: int): boolean
     }
 }

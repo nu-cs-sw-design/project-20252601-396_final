@@ -100,8 +100,8 @@ public class GameUI implements GameObserver {
         return scanner.nextLine().trim().toUpperCase();
     }
 
-    public int promptInsertionIndex() {
-        System.out.println(">> Enter index to insert Kitten (0 = Top):");
+    public int promptInsertionIndex(int deckSize) {
+        System.out.println(">> Enter index to insert Kitten (0 = Bottom " + (deckSize-1) + " = Top):");
         System.out.print("> ");
         try {
             String input = scanner.nextLine();

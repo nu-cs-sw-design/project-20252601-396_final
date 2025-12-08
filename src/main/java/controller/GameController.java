@@ -75,7 +75,7 @@ public class GameController {
     }
 
     private void handleExplosionInput() {
-        int index = ui.promptInsertionIndex();
+        int index = ui.promptInsertionIndex(game.getDeck().getDeckSize());
         game.handleExplosionInsert(index);
     }
 

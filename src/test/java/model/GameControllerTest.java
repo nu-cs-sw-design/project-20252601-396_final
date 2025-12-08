@@ -109,13 +109,15 @@ public class GameControllerTest {
     public void testHandleExplosionInput() {
         Game game = EasyMock.createMock(Game.class);
         GameUI ui = EasyMock.createMock(GameUI.class);
+        Deck deck = EasyMock.createMock(model.Deck.class);
 
         game.start();
         EasyMock.expectLastCall();
 
         EasyMock.expect(game.getPhase()).andReturn(GamePhase.EXPLOSION_PHASE).times(2);
-
-        EasyMock.expect(ui.promptInsertionIndex()).andReturn(0);
+        EasyMock.expect(game.getDeck()).andStubReturn(deck);
+        EasyMock.expect(deck.getDeckSize()).andStubReturn(0);
+        EasyMock.expect(ui.promptInsertionIndex(0)).andReturn(0);
         game.handleExplosionInsert(0);
         EasyMock.expectLastCall().once();
 

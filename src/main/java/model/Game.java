@@ -58,7 +58,7 @@ public class Game implements GameContext {
         }
 
         // Add 4 NopeCard
-        final int cardAddedFourTimes = 4;
+        final int cardAddedFourTimes = 3 * players.size();
         for (int i = 0; i < cardAddedFourTimes; i++) {
             deck.insertAt(0, CardFactory.createCard(CardType.NOPE));
             deck.insertAt(0, CardFactory.createCard(CardType.SHUFFLE));
