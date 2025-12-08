@@ -471,7 +471,7 @@ public class GameTest {
 
         EasyMock.replay(pending, deck);
 
-        game.handleNopeInput(false);
+        game.resolvePendingAction();
 
         assertEquals(GamePhase.NORMAL, game.getPhase());
         assertNull(game.getPendingAction());
@@ -487,31 +487,15 @@ public class GameTest {
         Deck deck = EasyMock.createMock(Deck.class);
         Game game = new Game(new ArrayList<>(), deck);
 
-        PendingAction pending = EasyMock.createMock(PendingAction.class);
-
         // setters strictly only used for testing
         game.setPhase(GamePhase.NOPE_PHASE);
-        game.setPendingAction(pending);
-        EasyMock.replay(pending, deck);
-
-        game.handleNopeInput(true);
-
-        assertEquals(GamePhase.NOPE_PHASE, game.getPhase());
-        assertNotNull(game.getPendingAction());
-        assertEquals(pending, game.getPendingAction());
-
-        EasyMock.verify(pending);
-    }
-
-    @Test
-    public void testResolvePendingActionHandlesNullSafe() {
-        Deck deck = EasyMock.createMock(Deck.class);
-        Game game = new Game(new ArrayList<>(), deck);
-
         game.setPendingAction(null);
         EasyMock.replay(deck);
 
-        game.handleNopeInput(false);
+        game.resolvePendingAction();
+
+        assertEquals(GamePhase.NOPE_PHASE, game.getPhase());
+        assertNull(game.getPendingAction());
 
         EasyMock.verify(deck);
     }

@@ -1,7 +1,9 @@
 package controller;
 
+import model.CardType;
 import model.Game;
 import model.GamePhase;
+import model.Player;
 import model.exceptions.GameException;
 import view.GameUI;
 
@@ -33,8 +35,7 @@ public class GameController {
 
                     case NORMAL:
                     default:
-                        boolean keepPlaying = handleNormalTurn();
-                        if (!keepPlaying) return;
+                        handleNormalTurn();
                         break;
                 }
 
@@ -42,38 +43,35 @@ public class GameController {
                 ui.onException(e);
             } catch (Exception e) {
                 ui.onGameMessage("CRITICAL ERROR: " + e.getMessage());
-                e.printStackTrace();
             }
         }
 
         ui.onGameMessage("Game Loop Ended. Thanks for playing!");
     }
 
-    private boolean handleNormalTurn() {
-        ui.displayHand(game.getCurrentPlayer());
-        String input = ui.promptCommand();
+    private void handleNormalTurn() {
+        while (true) {
+            ui.displayHand(game.getCurrentPlayer());
+            String input = ui.promptCommand();
 
-        if (input.equals("D")) {
-            game.drawCard();
-        }
-        else if (input.startsWith("P")) {
-            try {
+            if (input.equals("D")) {
+                game.drawCard();
+                return;
+            }
+            else if (input.startsWith("P")) {
                 String[] parts = input.split(" ");
-                if (parts.length < 2) {
+                if (parts.length != 2) {
                     ui.onGameMessage("Invalid format. Usage: P <cardIndex>");
                 } else {
                     int cardIdx = Integer.parseInt(parts[1]);
                     game.playCard(game.getCurrentPlayer().getId(), cardIdx);
+                    return;
                 }
-            } catch (Exception e) {
-                ui.onGameMessage("Invalid input.");
+            }
+            else {
+                ui.onGameMessage("Unknown command. Please enter 'D' or 'P <index>'.");
             }
         }
-        else {
-            ui.onGameMessage("Unknown command.");
-        }
-
-        return true;
     }
 
     private void handleExplosionInput() {
@@ -82,26 +80,30 @@ public class GameController {
     }
 
     private void handleNopePhase() {
-        boolean nopePlayed = false;
-
-        for (model.Player p : game.getPlayers()) {
-            if (p.getDead() || !p.hasCard(model.CardType.NOPE)) {
+        for (Player p : game.getPlayers()) {
+            if (p.getDead() || !p.hasCard(CardType.NOPE)) {
                 continue;
             }
 
-            boolean wantsToNope = ui.promptPlayNope(p.getId());
+            int currentNopes = game.getPendingAction().getNopeCount();
+            boolean isCancelled = (currentNopes % 2 != 0);
+
+            String statusMsg = isCancelled
+                    ? "The action is currently BLOCKED. Do you want to NOPE the NOPE? (Revive the action)"
+                    : "Do you want to CANCEL the action?";
+
+            boolean wantsToNope = ui.promptPlayNope(p.getId(), statusMsg);
+
             if (wantsToNope) {
                 int cardIdx = p.getNopeIndex();
                 if (cardIdx != -1) {
                     game.playCard(p.getId(), cardIdx);
-                    return;
+                    ui.onGameMessage("   >> NOPE played! Moving to next player...");
                 }
             }
         }
 
-        if (!nopePlayed) {
-            ui.onGameMessage("No Nopes played. Resolving action...");
-            game.handleNopeInput(false);
-        }
+        ui.onGameMessage("Nope phase finished. Resolving action...");
+        game.resolvePendingAction();
     }
 }

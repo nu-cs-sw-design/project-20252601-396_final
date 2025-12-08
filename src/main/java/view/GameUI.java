@@ -73,16 +73,25 @@ public class GameUI implements GameObserver {
     }
 
     public int promptPlayerCount() {
-        System.out.println(">> How many players do you want? (2-5):");
+        System.out.println(">> How many players do you want? (3-5):");
         System.out.print("> ");
-        while (!scanner.hasNextInt()) {
-            System.out.println("Invalid input. Please enter a number.");
-            scanner.next();
-            System.out.print("> ");
+
+        while (true) {
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                System.out.print("> ");
+                scanner.next();
+            }
+
+            int count = scanner.nextInt();
+            scanner.nextLine();
+            if (count >= 3 && count <= 5) {
+                return count;
+            } else {
+                System.out.println("Invalid number. Please enter between 3 and 5.");
+                System.out.print("> ");
+            }
         }
-        int count = scanner.nextInt();
-        scanner.nextLine();
-        return count;
     }
 
     public String promptCommand() {
@@ -102,9 +111,9 @@ public class GameUI implements GameObserver {
         }
     }
 
-    public boolean promptPlayNope(int playerId) {
+    public boolean promptPlayNope(int playerId, String message) {
         System.out.println(">> Player " + playerId + ", you have a NOPE card.");
-        System.out.println("   Do you want to use it to CANCEL the action? [Y]es / [N]o");
+        System.out.println("   " + message + " [Y]es / [N]o");
         System.out.print("> ");
         String input = scanner.nextLine().trim().toUpperCase();
         return input.equals("Y");

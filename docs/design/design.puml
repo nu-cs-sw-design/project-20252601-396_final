@@ -71,11 +71,11 @@ package model {
         +playCard(playerIdx: int, cardIdx: int): void
         +handleNopeInput(wantsToNope: boolean): void
         +handleExplosionInsert(index: int): void
+        +resolvePendingAction(): void
 
         -nextTurn(): void
         -checkGameOver(): void
         -handleExplosionLogic(player: Player): void
-        -resolvePendingAction(): void
     }
 
     class Player {
@@ -177,11 +177,11 @@ package controller {
         -game: model.Game
         -ui: view.GameUI
 
-        +initializeSequence(): void
-        +handleCardPlay(cardIndex: int): void
-        +handleDraw(): void
-        +handleNopeResponse(response: boolean): void
-        +handleKittenInsertion(index: int): void
+        +startGame(): void
+        -gameLoop(): void
+        -handleNormalTurn(): void
+        -handleExplosionInput(): void
+        -handleNopePhase(): void
     }
 
     class Main {

@@ -212,7 +212,7 @@ public class Game implements GameContext {
         }
     }
 
-    private void resolvePendingAction() {
+    public void resolvePendingAction() {
         if (pendingAction == null) return;
 
         pendingAction.resolve(this);
@@ -220,12 +220,6 @@ public class Game implements GameContext {
         // Reset
         pendingAction = null;
         phase = GamePhase.NORMAL;
-    }
-
-    public void handleNopeInput(boolean wantsToNope){
-        if (!wantsToNope) {
-            resolvePendingAction();
-        }
     }
 
     public void handleExplosionInsert(int index){
